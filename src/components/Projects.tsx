@@ -27,6 +27,11 @@ export default function Projects() {
             </span>
             <h3 className="mt-3 text-[clamp(20px,2vw,26px)] font-semibold text-text-primary">
               {mainProject.title}
+              {mainProject.status && (
+                <span className="ml-3 inline-block align-middle rounded-full bg-accent-teal/15 px-3 py-0.5 text-[10px] font-medium uppercase tracking-wider text-accent-teal">
+                  {mainProject.status}
+                </span>
+              )}
             </h3>
             <p className="mt-3 text-sm leading-relaxed text-text-secondary">
               {mainProject.description}
@@ -53,9 +58,12 @@ export default function Projects() {
           </a>
 
           {/* Secondary project — CREATOR HUB (indigo, 40%) */}
-          <a
-            href="#creatorhub-decisions"
-            className={`group rounded-[8px] border border-border-subtle ${secondaryProject.accent} bg-bg-primary p-6 transition-all duration-200 hover:scale-[1.01] hover:border-t-2 hover:opacity-95`}
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={() => { window.location.hash = "creatorhub-decisions"; }}
+            onKeyDown={(e) => { if (e.key === "Enter") window.location.hash = "creatorhub-decisions"; }}
+            className={`group cursor-pointer rounded-[8px] border border-border-subtle ${secondaryProject.accent} bg-bg-primary p-6 transition-all duration-200 hover:scale-[1.01] hover:border-t-2 hover:opacity-95`}
           >
             <span className="label-uppercase text-text-hints">
               {secondaryProject.subtitle}
@@ -81,8 +89,21 @@ export default function Projects() {
                 {secondaryProject.linkLabel}
                 <span aria-hidden="true" className="text-sm">&rarr;</span>
               </span>
+              <a
+                href="https://creatorhub-g4pn.onrender.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-sm text-text-hints transition-all duration-200 hover:text-accent-indigo"
+              >
+                Live
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                  <polyline points="15 3 21 3 21 9" />
+                  <line x1="10" y1="14" x2="21" y2="3" />
+                </svg>
+              </a>
             </div>
-          </a>
+          </div>
         </div>
       </div>
     </section>

@@ -28,6 +28,7 @@ export interface Translations {
       accent: string;
       size: "large" | "small";
       linkLabel: string;
+      status?: string;
     }>;
     cta: string;
   };
@@ -114,6 +115,7 @@ const en: Translations = {
         accent: "border-t-accent-teal",
         size: "large",
         linkLabel: "Decisions",
+        status: "Final development phase",
       },
       {
         subtitle: "Artist Marketplace",
@@ -122,7 +124,7 @@ const en: Translations = {
         tags: ["Node", "TS", "Supabase"],
         accent: "border-t-accent-indigo",
         size: "small",
-        linkLabel: "More",
+        linkLabel: "Visit",
       },
     ],
     cta: "View on GitHub",
@@ -283,6 +285,7 @@ const pt: Translations = {
         accent: "border-t-accent-teal",
         size: "large",
         linkLabel: "Decis\u00f5es",
+        status: "Em fase final de desenvolvimento",
       },
       {
         subtitle: "Marketplace de Artistas",
@@ -291,7 +294,7 @@ const pt: Translations = {
         tags: ["Node", "TS", "Supabase"],
         accent: "border-t-accent-indigo",
         size: "small",
-        linkLabel: "Mais",
+        linkLabel: "Visitar",
       },
     ],
     cta: "Ver no GitHub",
