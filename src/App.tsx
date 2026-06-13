@@ -5,6 +5,7 @@ import Thinking from "./components/Thinking";
 import Projects from "./components/Projects";
 import NidusDecisions from "./components/NidusDecisions";
 import CreatorHubDecisions from "./components/CreatorHubDecisions";
+import AutoMatchDecisions from "./components/AutoMatchDecisions";
 import TechnicalDepth from "./components/TechnicalDepth";
 import Footer from "./components/Footer";
 
@@ -28,6 +29,7 @@ export default function App() {
           <Projects />
           <NidusDecisions />
           <CreatorHubDecisions />
+          <AutoMatchDecisions />
           <TechnicalDepth />
         </main>
 

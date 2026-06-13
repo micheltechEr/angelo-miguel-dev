@@ -29,6 +29,7 @@ export interface Translations {
       size: "large" | "small";
       linkLabel: string;
       status?: string;
+      liveUrl?: string;
     }>;
     cta: string;
   };
@@ -48,6 +49,12 @@ export interface Translations {
     stack: Array<{ label: string; value: string }>;
   };
   creatorHubDecisions: {
+    title: string;
+    subtitle: string;
+    decisions: Array<{ decision: string; alternative: string; reason: string }>;
+    stack: Array<{ label: string; value: string }>;
+  };
+  autoMatchDecisions: {
     title: string;
     subtitle: string;
     decisions: Array<{ decision: string; alternative: string; reason: string }>;
@@ -125,6 +132,17 @@ const en: Translations = {
         accent: "border-t-accent-indigo",
         size: "small",
         linkLabel: "Visit",
+        liveUrl: "https://creatorhub-g4pn.onrender.com/",
+      },
+      {
+        subtitle: "What do you need?",
+        title: "AUTO MATCH",
+        description: "Monolith. Next.js. React. TypeScript. PostgreSQL.",
+        tags: ["Next.js", "React", "TypeScript", "PostgreSQL"],
+        accent: "border-t-accent-gold",
+        size: "small",
+        linkLabel: "Details",
+        liveUrl: "https://match-auto-1.onrender.com/",
       },
     ],
     cta: "View on GitHub",
@@ -223,6 +241,22 @@ const en: Translations = {
       { label: "Payments", value: "ASAAS (webhooks, PIX, parcelamento)" },
     ],
   },
+  autoMatchDecisions: {
+    title: "AUTO MATCH — Architecture Decisions",
+    subtitle: "What do you need?",
+    decisions: [
+      { decision: "Monolith", alternative: "Microservices", reason: "Small team, simpler deploy" },
+      { decision: "PostgreSQL (Supabase)", alternative: "NoSQL", reason: "ACID transactions, critical data integrity" },
+      { decision: "Next.js API Routes", alternative: "Separate Backend", reason: "End-to-end TypeScript, single deploy" },
+      { decision: "Pure JWT Auth", alternative: "OAuth / Sessions", reason: "Stateless, simple, no external dependency" },
+    ],
+    stack: [
+      { label: "Frontend", value: "React, TypeScript, TailwindCSS" },
+      { label: "Backend", value: "Next.js API Routes (monolith)" },
+      { label: "Database", value: "PostgreSQL via Supabase" },
+      { label: "Auth", value: "Pure JWT" },
+    ],
+  },
   footer: {
     cta: "Let\u2019s talk",
     email: "angelomiguelrib@gmail.com",
@@ -295,6 +329,17 @@ const pt: Translations = {
         accent: "border-t-accent-indigo",
         size: "small",
         linkLabel: "Visitar",
+        liveUrl: "https://creatorhub-g4pn.onrender.com/",
+      },
+      {
+        subtitle: "Do que você precisa?",
+        title: "AUTO MATCH",
+        description: "Monolito. Next.js. React. TypeScript. PostgreSQL.",
+        tags: ["Next.js", "React", "TypeScript", "PostgreSQL"],
+        accent: "border-t-accent-gold",
+        size: "small",
+        linkLabel: "Detalhes",
+        liveUrl: "https://match-auto-1.onrender.com/",
       },
     ],
     cta: "Ver no GitHub",
@@ -391,6 +436,22 @@ const pt: Translations = {
       { label: "Backend", value: "Next.js API Routes (monolito modular)" },
       { label: "Banco", value: "PostgreSQL via Supabase (RLS, Realtime)" },
       { label: "Pagamentos", value: "ASAAS (webhooks, PIX, parcelamento)" },
+    ],
+  },
+  autoMatchDecisions: {
+    title: "AUTO MATCH — Decisões de Arquitetura",
+    subtitle: "Do que você precisa?",
+    decisions: [
+      { decision: "Monolito", alternative: "Microservices", reason: "Time pequeno, deploy simplificado" },
+      { decision: "PostgreSQL (Supabase)", alternative: "NoSQL", reason: "Transações ACID, integridade de dados crítica" },
+      { decision: "Next.js API Routes", alternative: "Backend separado", reason: "TypeScript ponta a ponta, deploy único" },
+      { decision: "JWT Puro", alternative: "OAuth / Sessões", reason: "Stateless, simples, sem dependência externa" },
+    ],
+    stack: [
+      { label: "Frontend", value: "React, TypeScript, TailwindCSS" },
+      { label: "Backend", value: "Next.js API Routes (monolito)" },
+      { label: "Banco", value: "PostgreSQL via Supabase" },
+      { label: "Auth", value: "JWT Puro" },
     ],
   },
   footer: {
