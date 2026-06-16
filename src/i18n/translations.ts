@@ -60,6 +60,18 @@ export interface Translations {
     decisions: Array<{ decision: string; alternative: string; reason: string }>;
     stack: Array<{ label: string; value: string }>;
   };
+  landingPages: {
+    title: string;
+    niches: Array<{
+      name: string;
+      sites: Array<{
+        name: string;
+        description: string;
+        url: string;
+        accent: string;
+      }>;
+    }>;
+  };
   footer: {
     cta: string;
     email: string;
@@ -257,6 +269,28 @@ const en: Translations = {
       { label: "Auth", value: "Pure JWT" },
     ],
   },
+  landingPages: {
+    title: "Landing Pages",
+    niches: [
+      {
+        name: "Odontology",
+        sites: [
+          {
+            name: "Instituto Sorriso Prime",
+            description: "Premium dental clinic landing page — modern, welcoming, and conversion-driven.",
+            url: "https://institutosorrisoprime-o1l9wanf1-micheltechers-projects.vercel.app/",
+            accent: "border-t-accent-teal",
+          },
+          {
+            name: "Clínica OdontoViva",
+            description: "Dental clinic landing page focused on trust, warmth, and patient engagement.",
+            url: "https://clnicaodontoviva-hgnkpljtu-micheltechers-projects.vercel.app/",
+            accent: "border-t-accent-indigo",
+          },
+        ],
+      },
+    ],
+  },
   footer: {
     cta: "Let\u2019s talk",
     email: "angelomiguelrib@gmail.com",
@@ -452,6 +486,28 @@ const pt: Translations = {
       { label: "Backend", value: "Next.js API Routes (monolito)" },
       { label: "Banco", value: "PostgreSQL via Supabase" },
       { label: "Auth", value: "JWT Puro" },
+    ],
+  },
+  landingPages: {
+    title: "Landing Pages",
+    niches: [
+      {
+        name: "Odontologia",
+        sites: [
+          {
+            name: "Instituto Sorriso Prime",
+            description: "Landing page para clínica odontológica premium — moderna, acolhedora e focada em conversão.",
+            url: "https://institutosorrisoprime-o1l9wanf1-micheltechers-projects.vercel.app/",
+            accent: "border-t-accent-teal",
+          },
+          {
+            name: "Clínica OdontoViva",
+            description: "Landing page para clínica odontológica focada em confiança, acolhimento e engajamento de pacientes.",
+            url: "https://clnicaodontoviva-hgnkpljtu-micheltechers-projects.vercel.app/",
+            accent: "border-t-accent-indigo",
+          },
+        ],
+      },
     ],
   },
   footer: {

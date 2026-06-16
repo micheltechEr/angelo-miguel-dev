@@ -3,6 +3,7 @@ import LanguageToggle from "./components/LanguageToggle";
 import Hero from "./components/Hero";
 import Thinking from "./components/Thinking";
 import Projects from "./components/Projects";
+import LandingPages from "./components/LandingPages";
 import NidusDecisions from "./components/NidusDecisions";
 import CreatorHubDecisions from "./components/CreatorHubDecisions";
 import AutoMatchDecisions from "./components/AutoMatchDecisions";
@@ -27,6 +28,7 @@ export default function App() {
           <Hero />
           <Thinking />
           <Projects />
+          <LandingPages />
           <NidusDecisions />
           <CreatorHubDecisions />
           <AutoMatchDecisions />
