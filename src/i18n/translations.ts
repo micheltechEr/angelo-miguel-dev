@@ -60,17 +60,24 @@ export interface Translations {
     decisions: Array<{ decision: string; alternative: string; reason: string }>;
     stack: Array<{ label: string; value: string }>;
   };
-  landingPages: {
+  servicesByNiche: {
     title: string;
+    description: string;
+    structures: {
+      standard: { name: string; characteristics: string[] };
+      custom: { name: string; characteristics: string[] };
+    };
     niches: Array<{
       name: string;
-      sites: Array<{
-        name: string;
-        description: string;
-        url: string;
-        accent: string;
-      }>;
+      accent: string;
+      sites?: Array<{ name: string; url: string }>;
     }>;
+    cta: {
+      message: string;
+      button: string;
+      whatsapp: string;
+      whatsappText: string;
+    };
   };
   footer: {
     cta: string;
@@ -79,6 +86,12 @@ export interface Translations {
   };
   nav: {
     languageToggle: string;
+  };
+  explicadorAgil: {
+    title: string;
+    subtitle: string;
+    questions: Array<{ question: string; answer: string }>;
+    cta: { label: string; href: string };
   };
 }
 
@@ -269,27 +282,43 @@ const en: Translations = {
       { label: "Auth", value: "Pure JWT" },
     ],
   },
-  landingPages: {
-    title: "Landing Pages",
-    niches: [
-      {
-        name: "Odontology",
-        sites: [
-          {
-            name: "Instituto Sorriso Prime",
-            description: "Premium dental clinic landing page — modern, welcoming, and conversion-driven.",
-            url: "https://institutosorrisoprime-o1l9wanf1-micheltechers-projects.vercel.app/",
-            accent: "border-t-accent-teal",
-          },
-          {
-            name: "Clínica OdontoViva",
-            description: "Dental clinic landing page focused on trust, warmth, and patient engagement.",
-            url: "https://clnicaodontoviva-hgnkpljtu-micheltechers-projects.vercel.app/",
-            accent: "border-t-accent-indigo",
-          },
+  servicesByNiche: {
+    title: "Services by Niche",
+    description: "Institutional website solutions tailored to each industry — illustrative examples.",
+    structures: {
+      standard: {
+        name: "Standard Structure",
+        characteristics: [
+          "Validated structure",
+          "Basic SEO",
+          "Ready-made sections",
+          "Customizable colors, images, texts, and visual identity",
         ],
       },
+      custom: {
+        name: "Custom Structure",
+        characteristics: [
+          "Exclusive architecture",
+          "Unique design",
+          "Custom flow",
+          "Specific functionalities",
+          "Prototype created after requirements gathering",
+        ],
+      },
+    },
+    niches: [
+      { name: "Dentistry", accent: "border-t-accent-teal", sites: [{ name: "Instituto Sorriso Prime", url: "https://institutosorrisoprime.vercel.app/" }, { name: "Clínica OdontoViva", url: "https://clnicaodontoviva.vercel.app/" }] },
+      { name: "Law", accent: "border-t-accent-indigo" },
+      { name: "Real Estate", accent: "border-t-accent-gold" },
+      { name: "Medical Clinics", accent: "border-t-accent-teal" },
+      { name: "Gyms", accent: "border-t-accent-indigo" },
     ],
+    cta: {
+      message: "We don't use pre-defined templates.\nEach project is planned according to business goals.",
+      button: "Request project analysis",
+      whatsapp: "5575988428289",
+      whatsappText: "Quero um orçamento personalizado",
+    },
   },
   footer: {
     cta: "Let\u2019s talk",
@@ -298,6 +327,32 @@ const en: Translations = {
   },
   nav: {
     languageToggle: "PT",
+  },
+  explicadorAgil: {
+    title: "Agile Explorer",
+    subtitle: "Get quick answers about our services",
+    questions: [
+      {
+        question: "Who is the Standard Structure for?",
+        answer: "Ideal for businesses that need a professional institutional website with a shorter development timeline.",
+      },
+      {
+        question: "What's the difference from the Custom Structure?",
+        answer: "The Standard Structure uses a pre-validated architecture while the Custom Structure is built from scratch with a unique design and exclusive features.",
+      },
+      {
+        question: "Can I change colors and images in the Standard Structure?",
+        answer: "Yes. The Standard Structure allows full customization of colors, images, texts, and visual identity to match your brand.",
+      },
+      {
+        question: "How does the Custom Structure process work?",
+        answer: "We start with a requirements gathering phase, then create a prototype, followed by development of the exclusive architecture and custom flow.",
+      },
+    ],
+    cta: {
+      label: "Request project analysis",
+      href: "https://wa.me/5575988428289?text=Quero%20um%20orçamento%20personalizado",
+    },
   },
 };
 
@@ -488,27 +543,43 @@ const pt: Translations = {
       { label: "Auth", value: "JWT Puro" },
     ],
   },
-  landingPages: {
-    title: "Landing Pages",
-    niches: [
-      {
-        name: "Odontologia",
-        sites: [
-          {
-            name: "Instituto Sorriso Prime",
-            description: "Landing page para clínica odontológica premium — moderna, acolhedora e focada em conversão.",
-            url: "https://institutosorrisoprime-o1l9wanf1-micheltechers-projects.vercel.app/",
-            accent: "border-t-accent-teal",
-          },
-          {
-            name: "Clínica OdontoViva",
-            description: "Landing page para clínica odontológica focada em confiança, acolhimento e engajamento de pacientes.",
-            url: "https://clnicaodontoviva-hgnkpljtu-micheltechers-projects.vercel.app/",
-            accent: "border-t-accent-indigo",
-          },
+  servicesByNiche: {
+    title: "Serviços por Nicho",
+    description: "Soluções de site institucional sob medida para cada segmento — exemplos ilustrativos.",
+    structures: {
+      standard: {
+        name: "Estrutura Padrão",
+        characteristics: [
+          "Estrutura validada",
+          "SEO básico",
+          "Seções prontas",
+          "Mudança de cores, imagens, textos e identidade visual",
         ],
       },
+      custom: {
+        name: "Estrutura Personalizada",
+        characteristics: [
+          "Arquitetura exclusiva",
+          "Design único",
+          "Fluxo personalizado",
+          "Funcionalidades específicas",
+          "Protótipo criado após levantamento dos requisitos",
+        ],
+      },
+    },
+    niches: [
+      { name: "Odontologia", accent: "border-t-accent-teal", sites: [{ name: "Instituto Sorriso Prime", url: "https://institutosorrisoprime.vercel.app/" }, { name: "Clínica OdontoViva", url: "https://clnicaodontoviva.vercel.app/" }] },
+      { name: "Advocacia", accent: "border-t-accent-indigo" },
+      { name: "Imobiliárias", accent: "border-t-accent-gold" },
+      { name: "Clínicas Médicas", accent: "border-t-accent-teal" },
+      { name: "Academias", accent: "border-t-accent-indigo" },
     ],
+    cta: {
+      message: "Não utilizamos modelos pré-definidos.\nCada projeto é planejado conforme os objetivos do negócio.",
+      button: "Solicitar análise do projeto",
+      whatsapp: "5575988428289",
+      whatsappText: "Quero um orçamento personalizado",
+    },
   },
   footer: {
     cta: "Vamos conversar",
@@ -517,6 +588,32 @@ const pt: Translations = {
   },
   nav: {
     languageToggle: "EN",
+  },
+  explicadorAgil: {
+    title: "Explicador Ágil",
+    subtitle: "Tire suas dúvidas rapidamente",
+    questions: [
+      {
+        question: "Para quem a Estrutura Padrão é recomendada?",
+        answer: "Ideal para empresas que precisam de um site institucional profissional com menor prazo de desenvolvimento.",
+      },
+      {
+        question: "Qual a diferença para a Estrutura Personalizada?",
+        answer: "A Estrutura Padrão utiliza uma arquitetura previamente validada enquanto a Personalizada é criada do zero com design único e funcionalidades exclusivas.",
+      },
+      {
+        question: "Posso mudar as cores e imagens na Estrutura Padrão?",
+        answer: "Sim. A Estrutura Padrão permite personalizar cores, imagens, textos e identidade visual para se adequar à sua marca.",
+      },
+      {
+        question: "Como funciona o processo da Estrutura Personalizada?",
+        answer: "Fazemos um levantamento de requisitos, criamos um protótipo, e então desenvolvemos a arquitetura exclusiva com fluxo personalizado.",
+      },
+    ],
+    cta: {
+      label: "Solicitar análise do projeto",
+      href: "https://wa.me/5575988428289?text=Quero%20um%20orçamento%20personalizado",
+    },
   },
 };
 
