@@ -8,6 +8,7 @@ type Question = { question: string; answer: string };
 export type ExplicadorAgilConfig = {
   title: string;
   subtitle: string;
+  startText: string;
   questions: Question[];
   cta?: { label: string; href: string };
 };
@@ -129,7 +130,7 @@ export default function ExplicadorAgil({ config }: Props) {
           {messages.length === 0 && (
             <p className="text-center text-xs text-text-hints pt-6">
               {data.questions.length > 0
-                ? "Choose a question below to get started."
+                ? data.startText
                 : ""}
             </p>
           )}

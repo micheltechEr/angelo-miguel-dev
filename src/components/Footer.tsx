@@ -54,6 +54,14 @@ export default function Footer() {
         <p className="mt-10 text-xs text-text-hints/60">
           &copy; 2026 {t.footer.copyright}
         </p>
+
+        {/* Subtle link to solutions page — for business clients */}
+        <a
+          href="/solucoes"
+          className="mt-6 inline-block text-[11px] text-text-hints/40 transition-colors duration-200 hover:text-accent-teal/60"
+        >
+          {t.footer.solucoesLink}
+        </a>
       </div>
     </footer>
   );

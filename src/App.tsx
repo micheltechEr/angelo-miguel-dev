@@ -1,15 +1,19 @@
 import { LanguageProvider } from "./i18n/LanguageContext";
 import LanguageToggle from "./components/LanguageToggle";
-import Hero from "./components/Hero";
-import Thinking from "./components/Thinking";
-import Projects from "./components/Projects";
-import ServicesByNiche from "./components/ServicesByNiche";
-import NidusDecisions from "./components/NidusDecisions";
-import CreatorHubDecisions from "./components/CreatorHubDecisions";
-import AutoMatchDecisions from "./components/AutoMatchDecisions";
-import TechnicalDepth from "./components/TechnicalDepth";
 import Footer from "./components/Footer";
-import ExplicadorAgil from "./components/ExplicadorAgil";
+import HomePage from "./pages/HomePage";
+import SolucoesPage from "./pages/SolucoesPage";
+import { useRouter } from "./hooks/useRouter";
+
+function PageContent() {
+  const { pathname } = useRouter();
+
+  if (pathname === "/solucoes") {
+    return <SolucoesPage />;
+  }
+
+  return <HomePage />;
+}
 
 export default function App() {
   return (
@@ -26,20 +30,11 @@ export default function App() {
         <LanguageToggle />
 
         <main id="main-content">
-          <Hero />
-          <Thinking />
-          <Projects />
-          <ServicesByNiche />
-          <NidusDecisions />
-          <CreatorHubDecisions />
-          <AutoMatchDecisions />
-          <TechnicalDepth />
+          <PageContent />
         </main>
 
         <Footer />
       </div>
-
-      <ExplicadorAgil />
     </LanguageProvider>
   );
 }

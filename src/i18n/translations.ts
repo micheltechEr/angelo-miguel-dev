@@ -83,6 +83,7 @@ export interface Translations {
     cta: string;
     email: string;
     copyright: string;
+    solucoesLink: string;
   };
   nav: {
     languageToggle: string;
@@ -90,8 +91,24 @@ export interface Translations {
   explicadorAgil: {
     title: string;
     subtitle: string;
+    startText: string;
     questions: Array<{ question: string; answer: string }>;
     cta: { label: string; href: string };
+  };
+  solucoes: {
+    badge: string;
+    title: string;
+    subtitle: string;
+    description: string;
+    ctaWhatsapp: string;
+    ctaServices: string;
+    explicador: {
+      title: string;
+      subtitle: string;
+      startText: string;
+      questions: Array<{ question: string; answer: string }>;
+      cta: { label: string; href: string };
+    };
   };
 }
 
@@ -324,13 +341,47 @@ const en: Translations = {
     cta: "Let\u2019s talk",
     email: "angelomiguelrib@gmail.com",
     copyright: "Ângelo Miguel",
+    solucoesLink: "Need a website? →",
   },
   nav: {
     languageToggle: "PT",
   },
+  solucoes: {
+    badge: "Web Solutions",
+    title: "Your Business Deserves a Professional Website",
+    subtitle: "Clear. Modern. Effective.",
+    description:
+      "No technical jargon. No complexity. Just a website that presents your business professionally, loads fast on any device, and helps you attract more clients.",
+    ctaWhatsapp: "Request Quote",
+    ctaServices: "See Solutions",
+    explicador: {
+      title: "Quick Help",
+      subtitle: "Answers about our services",
+      startText: "Choose a question below to get started.",
+      questions: [
+        {
+          question: "How long does it take to build a site?",
+          answer: "Standard structure sites are delivered in 2-3 weeks. Custom projects vary based on requirements.",
+        },
+        {
+          question: "Do I need technical knowledge?",
+          answer: "Not at all. We handle everything from domain registration to hosting setup. You just send us your content.",
+        },
+        {
+          question: "What if I need changes after the site is live?",
+          answer: "Changes are covered within the first 3 months after delivery. Beyond that, a new budget will be quoted.",
+        },
+      ],
+      cta: {
+        label: "Request Quote",
+        href: "https://wa.me/5575988428289?text=Quero%20um%20or%C3%A7amento%20personalizado",
+      },
+    },
+  },
   explicadorAgil: {
     title: "Agile Explorer",
     subtitle: "Get quick answers about our services",
+    startText: "Choose a question below to get started.",
     questions: [
       {
         question: "Who is the Standard Structure for?",
@@ -585,13 +636,47 @@ const pt: Translations = {
     cta: "Vamos conversar",
     email: "angelomiguelrib@gmail.com",
     copyright: "Ângelo Miguel",
+    solucoesLink: "Precisa de um site? →",
   },
   nav: {
     languageToggle: "EN",
   },
+  solucoes: {
+    badge: "Soluções Web",
+    title: "Seu Negócio Merece um Site Profissional",
+    subtitle: "Claro. Moderno. Eficaz.",
+    description:
+      "Sem termos técnicos. Sem complicação. Apenas um site que apresenta seu negócio profissionalmente, carrega rápido em qualquer dispositivo e ajuda você a atrair mais clientes.",
+    ctaWhatsapp: "Solicitar Orçamento",
+    ctaServices: "Ver Soluções",
+    explicador: {
+      title: "Ajuda Rápida",
+      subtitle: "Respostas sobre nossos serviços",
+      startText: "Escolha uma pergunta abaixo para começar.",
+      questions: [
+        {
+          question: "Quanto tempo leva para fazer um site?",
+          answer: "Sites com estrutura padrão ficam prontos em 2 a 3 semanas. Projetos personalizados variam conforme os requisitos.",
+        },
+        {
+          question: "Preciso ter conhecimento técnico?",
+          answer: "De forma alguma. Cuidamos de tudo, desde o registro do domínio até a hospedagem. Você só envia o conteúdo.",
+        },
+        {
+          question: "E se eu precisar de mudanças depois do site no ar?",
+          answer: "Mudanças estão cobertas nos primeiros 3 meses após a entrega. Após esse período, um novo orçamento será cotado.",
+        },
+      ],
+      cta: {
+        label: "Solicitar Orçamento",
+        href: "https://wa.me/5575988428289?text=Quero%20um%20or%C3%A7amento%20personalizado",
+      },
+    },
+  },
   explicadorAgil: {
     title: "Explicador Ágil",
     subtitle: "Tire suas dúvidas rapidamente",
+    startText: "Escolha uma pergunta abaixo para começar.",
     questions: [
       {
         question: "Para quem a Estrutura Padrão é recomendada?",
