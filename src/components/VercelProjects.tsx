@@ -16,7 +16,7 @@ interface VercelProjectsProps {
 }
 
 const CACHE_KEY = "VERCEL_PROJECTS_CACHE_48H";
-const CACHE_DURATION_MS = 48 * 60 * 60 * 1000; // 48 hours in ms
+const CACHE_DURATION_MS = 48 * 60 * 60 * 1000; // 48 hours
 
 const FALLBACK_PROJECTS: Project[] = [
   { name: "psico_patricia", url: "https://psicopatricia.vercel.app" },
@@ -172,13 +172,64 @@ export default function VercelProjects({
   };
 
   const getScreenshotUrl = (url: string, mode: "desktop" | "mobile") => {
+    const encoded = encodeURIComponent(url);
     if (mode === "mobile") {
-      return `https://api.microlink.io/?url=${encodeURIComponent(url)}&screenshot=true&viewport.isMobile=true&embed=screenshot.url`;
+      return `https://api.microlink.io/?url=${encoded}&screenshot=true&viewport.isMobile=true&embed=screenshot.url`;
     }
-    return `https://image.thum.io/get/width/600/crop/800/${url}`;
+    return `https://api.microlink.io/?url=${encoded}&screenshot=true&embed=screenshot.url`;
   };
 
   const displayedProjects = limit ? projects.slice(0, limit) : projects;
+
+  const renderCardPreview = (project: Project) => {
+    const screenshotUrl = getScreenshotUrl(project.url, deviceMode);
+
+    if (deviceMode === "mobile") {
+      return (
+        <div className="relative mt-4 flex justify-center items-center py-3 bg-bg-elevated/40 rounded-[6px] border border-border-subtle h-[220px]">
+          <div className="relative w-[115px] aspect-[9/18] overflow-hidden rounded-[14px] border-[2px] border-border-strong bg-black shadow-xl group">
+            <div className="absolute top-1 left-1/2 -translate-x-1/2 z-10 h-1 w-6 rounded-full bg-border-strong" />
+            <img
+              src={screenshotUrl}
+              alt={`${project.name} mobile preview`}
+              loading="lazy"
+              className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+              onError={(e) => {
+                e.currentTarget.src = `https://image.thum.io/get/width/600/crop/800/${project.url}`;
+              }}
+            />
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="relative mt-4 overflow-hidden rounded-[6px] border border-border-strong bg-black">
+        <div className="flex items-center justify-between bg-bg-secondary px-3 py-1.5 border-b border-border-subtle">
+          <div className="flex items-center gap-1.5">
+            <span className="h-1.5 w-1.5 rounded-full bg-red-500/80" />
+            <span className="h-1.5 w-1.5 rounded-full bg-yellow-500/80" />
+            <span className="h-1.5 w-1.5 rounded-full bg-green-500/80" />
+          </div>
+          <span className="font-mono text-[8px] text-text-hints truncate max-w-[140px]">
+            {project.url.replace("https://", "")}
+          </span>
+        </div>
+
+        <div className="relative aspect-[16/10] w-full overflow-hidden bg-bg-elevated group">
+          <img
+            src={screenshotUrl}
+            alt={`${project.name} desktop preview`}
+            loading="lazy"
+            className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+            onError={(e) => {
+              e.currentTarget.src = `https://image.thum.io/get/width/600/crop/800/${project.url}`;
+            }}
+          />
+        </div>
+      </div>
+    );
+  };
 
   return (
     <section className="relative px-6 py-12 overflow-hidden bg-bg-primary">
@@ -265,88 +316,13 @@ export default function VercelProjects({
                 ref={scrollRef}
                 className="mt-12 flex gap-6 overflow-x-auto snap-x snap-mandatory no-scrollbar py-2 px-1 scroll-smooth"
               >
-                {displayedProjects.map((project, idx) => {
-                  const screenshotUrl = getScreenshotUrl(project.url, deviceMode);
-                  return (
-                    <div
-                      key={project.name}
-                      className="snap-start shrink-0 w-[290px] sm:w-[320px] lg:w-[340px]"
-                    >
-                      <Reveal delay={idx * 40}>
-                        <div className="tech-card flex h-[410px] flex-col rounded-[8px] p-5">
-                          {/* Header */}
-                          <div className="flex items-center justify-between border-b border-border-subtle pb-3">
-                            <span className="font-mono text-[9px] text-text-hints uppercase tracking-widest">
-                              SYS // {project.name.slice(0, 12)}
-                            </span>
-                            <span className="h-1.5 w-1.5 rounded-full bg-accent-teal" />
-                          </div>
-
-                          {/* Title & URL */}
-                          <div className="mt-3">
-                            <h3 className="text-base font-semibold text-text-primary tracking-tight truncate">
-                              {formatName(project.name)}
-                            </h3>
-                            <p className="mt-0.5 text-xs font-mono text-text-hints truncate">
-                              {project.url.replace("https://", "")}
-                            </p>
-                          </div>
-
-                          {/* Direct Preview Image Header (Always visible) */}
-                          <div className="mt-4 overflow-hidden rounded-[6px] border border-border-strong bg-black">
-                            <div className="flex items-center justify-between bg-bg-secondary px-3 py-1.5 border-b border-border-subtle">
-                              <div className="flex items-center gap-1.5">
-                                <span className="h-1.5 w-1.5 rounded-full bg-red-500/80" />
-                                <span className="h-1.5 w-1.5 rounded-full bg-yellow-500/80" />
-                                <span className="h-1.5 w-1.5 rounded-full bg-green-500/80" />
-                              </div>
-                              <span className="font-mono text-[8px] text-text-hints truncate max-w-[140px]">
-                                {project.url.replace("https://", "")}
-                              </span>
-                            </div>
-
-                            <div className="relative h-[180px] w-full overflow-hidden bg-bg-elevated group">
-                              <img
-                                src={screenshotUrl}
-                                alt={project.name}
-                                loading="lazy"
-                                className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                                onError={(e) => {
-                                  e.currentTarget.src = `https://api.microlink.io/?url=${encodeURIComponent(project.url)}&screenshot=true&embed=screenshot.url`;
-                                }}
-                              />
-                            </div>
-                          </div>
-
-                          {/* Actions */}
-                          <div className="mt-auto flex items-center justify-between pt-4 gap-2 border-t border-border-subtle/40">
-                            <span className="font-mono text-[9px] uppercase tracking-wider text-text-hints">
-                              {deviceMode}
-                            </span>
-
-                            <a
-                              href={project.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 font-mono text-[10px] font-bold uppercase tracking-wider text-accent-teal hover:text-accent-teal/80"
-                            >
-                              {language === "en" ? "VISIT SITE" : "VISITAR SITE"} ↗
-                            </a>
-                          </div>
-                        </div>
-                      </Reveal>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              /* Grid Layout */
-              <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {displayedProjects.map((project, idx) => {
-                  const screenshotUrl = getScreenshotUrl(project.url, deviceMode);
-                  return (
-                    <Reveal key={project.name} delay={idx * 40}>
-                      <div className="tech-card flex h-full flex-col rounded-[8px] p-5">
+                {displayedProjects.map((project, idx) => (
+                  <div
+                    key={project.name}
+                    className="snap-start shrink-0 w-[290px] sm:w-[320px] lg:w-[340px]"
+                  >
+                    <Reveal delay={idx * 40}>
+                      <div className="tech-card flex h-[430px] flex-col rounded-[8px] p-5">
                         {/* Header */}
                         <div className="flex items-center justify-between border-b border-border-subtle pb-3">
                           <span className="font-mono text-[9px] text-text-hints uppercase tracking-widest">
@@ -365,36 +341,13 @@ export default function VercelProjects({
                           </p>
                         </div>
 
-                        {/* Direct Preview Image Header (Always visible) */}
-                        <div className="mt-4 overflow-hidden rounded-[6px] border border-border-strong bg-black">
-                          <div className="flex items-center justify-between bg-bg-secondary px-3 py-1.5 border-b border-border-subtle">
-                            <div className="flex items-center gap-1.5">
-                              <span className="h-1.5 w-1.5 rounded-full bg-red-500/80" />
-                              <span className="h-1.5 w-1.5 rounded-full bg-yellow-500/80" />
-                              <span className="h-1.5 w-1.5 rounded-full bg-green-500/80" />
-                            </div>
-                            <span className="font-mono text-[8px] text-text-hints truncate max-w-[140px]">
-                              {project.url.replace("https://", "")}
-                            </span>
-                          </div>
-
-                          <div className="relative h-[200px] w-full overflow-hidden bg-bg-elevated group">
-                            <img
-                              src={screenshotUrl}
-                              alt={project.name}
-                              loading="lazy"
-                              className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                              onError={(e) => {
-                                e.currentTarget.src = `https://api.microlink.io/?url=${encodeURIComponent(project.url)}&screenshot=true&embed=screenshot.url`;
-                              }}
-                            />
-                          </div>
-                        </div>
+                        {/* Preview Screenshot (Desktop or Mobile) */}
+                        {renderCardPreview(project)}
 
                         {/* Actions */}
-                        <div className="mt-auto flex items-center justify-between pt-4 gap-2 border-t border-border-subtle/40 mt-4">
+                        <div className="mt-auto flex items-center justify-between pt-4 gap-2 border-t border-border-subtle/40">
                           <span className="font-mono text-[9px] uppercase tracking-wider text-text-hints">
-                            {deviceMode} VIEW
+                            {deviceMode} MODE
                           </span>
 
                           <a
@@ -408,8 +361,54 @@ export default function VercelProjects({
                         </div>
                       </div>
                     </Reveal>
-                  );
-                })}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              /* Grid Layout */
+              <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {displayedProjects.map((project, idx) => (
+                  <Reveal key={project.name} delay={idx * 40}>
+                    <div className="tech-card flex h-full flex-col rounded-[8px] p-5">
+                      {/* Header */}
+                      <div className="flex items-center justify-between border-b border-border-subtle pb-3">
+                        <span className="font-mono text-[9px] text-text-hints uppercase tracking-widest">
+                          SYS // {project.name.slice(0, 12)}
+                        </span>
+                        <span className="h-1.5 w-1.5 rounded-full bg-accent-teal" />
+                      </div>
+
+                      {/* Title & URL */}
+                      <div className="mt-3">
+                        <h3 className="text-base font-semibold text-text-primary tracking-tight truncate">
+                          {formatName(project.name)}
+                        </h3>
+                        <p className="mt-0.5 text-xs font-mono text-text-hints truncate">
+                          {project.url.replace("https://", "")}
+                        </p>
+                      </div>
+
+                      {/* Preview Screenshot (Desktop or Mobile) */}
+                      {renderCardPreview(project)}
+
+                      {/* Actions */}
+                      <div className="mt-auto flex items-center justify-between pt-4 gap-2 border-t border-border-subtle/40 mt-4">
+                        <span className="font-mono text-[9px] uppercase tracking-wider text-text-hints">
+                          {deviceMode} MODE
+                        </span>
+
+                        <a
+                          href={project.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 font-mono text-[10px] font-bold uppercase tracking-wider text-accent-teal hover:text-accent-teal/80"
+                        >
+                          {language === "en" ? "VISIT SITE" : "VISITAR SITE"} ↗
+                        </a>
+                      </div>
+                    </div>
+                  </Reveal>
+                ))}
               </div>
             )}
 
