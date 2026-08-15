@@ -6,6 +6,7 @@ import HomePage from "./pages/HomePage";
 import SolucoesPage from "./pages/SolucoesPage";
 import ProjetosPage from "./pages/ProjetosPage";
 import { useRouter } from "./hooks/useRouter";
+import AnalyticsTracker from "./components/AnalyticsTracker";
 
 function PageContent() {
   const { pathname } = useRouter();
@@ -25,6 +26,7 @@ export default function App() {
   return (
     <LanguageProvider>
       <Preloader />
+      <AnalyticsTracker />
       <div className="min-h-screen bg-bg-primary text-text-primary">
         {/* Skip to main — accessibility */}
         <a
