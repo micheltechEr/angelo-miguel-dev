@@ -1,6 +1,7 @@
 import { useLanguage } from "../i18n/LanguageContext";
 import SolucoesHero from "../components/SolucoesHero";
-import ServicesByNiche from "../components/ServicesByNiche";
+import VercelProjects from "../components/VercelProjects";
+import DiferenciaisSolucoes from "../components/DiferenciaisSolucoes";
 import ExplicadorAgil from "../components/ExplicadorAgil";
 
 export default function SolucoesPage() {
@@ -9,7 +10,8 @@ export default function SolucoesPage() {
   return (
     <>
       <SolucoesHero />
-      <ServicesByNiche />
+      <VercelProjects limit={4} showSeeMore={true} />
+      <DiferenciaisSolucoes />
       <ExplicadorAgil config={t.solucoes.explicador} />
     </>
   );

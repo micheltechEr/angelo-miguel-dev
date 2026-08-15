@@ -1,8 +1,10 @@
 import { LanguageProvider } from "./i18n/LanguageContext";
-import LanguageToggle from "./components/LanguageToggle";
+import Preloader from "./components/Preloader";
+import NavBar from "./components/NavBar";
 import Footer from "./components/Footer";
 import HomePage from "./pages/HomePage";
 import SolucoesPage from "./pages/SolucoesPage";
+import ProjetosPage from "./pages/ProjetosPage";
 import { useRouter } from "./hooks/useRouter";
 
 function PageContent() {
@@ -12,12 +14,17 @@ function PageContent() {
     return <SolucoesPage />;
   }
 
+  if (pathname === "/projetos" || pathname === "/projetos-ativos") {
+    return <ProjetosPage />;
+  }
+
   return <HomePage />;
 }
 
 export default function App() {
   return (
     <LanguageProvider>
+      <Preloader />
       <div className="min-h-screen bg-bg-primary text-text-primary">
         {/* Skip to main — accessibility */}
         <a
@@ -27,7 +34,7 @@ export default function App() {
           Skip to main content
         </a>
 
-        <LanguageToggle />
+        <NavBar />
 
         <main id="main-content">
           <PageContent />

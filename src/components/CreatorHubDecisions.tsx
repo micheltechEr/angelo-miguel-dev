@@ -33,9 +33,9 @@ export default function CreatorHubDecisions() {
           {t.creatorHubDecisions.stack.map((item) => (
             <div
               key={item.label}
-              className="rounded-[8px] border border-border-subtle border-t-accent-indigo bg-bg-primary p-4"
+              className="rounded-[8px] border border-border-subtle border-t-accent-violet bg-bg-primary p-4"
             >
-              <span className="label-uppercase text-accent-indigo">
+              <span className="label-uppercase text-accent-violet">
                 {item.label}
               </span>
               <p className="mt-2 text-sm text-text-secondary">{item.value}</p>
@@ -48,7 +48,7 @@ export default function CreatorHubDecisions() {
           <table className="w-full text-left text-sm">
             <thead>
               <tr className="border-b border-border-subtle">
-                <th className="label-uppercase pb-3 pr-4 text-accent-indigo">Decision</th>
+                <th className="label-uppercase pb-3 pr-4 text-accent-violet">Decision</th>
                 <th className="label-uppercase pb-3 pr-4 text-text-hints">Alternative</th>
                 <th className="label-uppercase pb-3 text-text-hints">Why</th>
               </tr>

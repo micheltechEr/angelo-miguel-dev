@@ -21,7 +21,7 @@ export default function AutoMatchDecisions() {
           </div>
           <button
             onClick={close}
-            className="mt-1 shrink-0 rounded-[4px] border border-border-subtle px-3 py-1 text-xs text-text-hints transition-all duration-200 hover:border-accent-gold hover:text-accent-gold"
+            className="mt-1 shrink-0 rounded-[4px] border border-border-subtle px-3 py-1 text-xs text-text-hints transition-all duration-200 hover:border-accent-amber hover:text-accent-amber"
             aria-label="Close"
           >
             ✕
@@ -33,9 +33,9 @@ export default function AutoMatchDecisions() {
           {t.autoMatchDecisions.stack.map((item) => (
             <div
               key={item.label}
-              className="rounded-[8px] border border-border-subtle border-t-accent-gold bg-bg-primary p-4"
+              className="rounded-[8px] border border-border-subtle border-t-accent-amber bg-bg-primary p-4"
             >
-              <span className="label-uppercase text-accent-gold">
+              <span className="label-uppercase text-accent-amber">
                 {item.label}
               </span>
               <p className="mt-2 text-sm text-text-secondary">{item.value}</p>
@@ -48,7 +48,7 @@ export default function AutoMatchDecisions() {
           <table className="w-full text-left text-sm">
             <thead>
               <tr className="border-b border-border-subtle">
-                <th className="label-uppercase pb-3 pr-4 text-accent-gold">Decision</th>
+                <th className="label-uppercase pb-3 pr-4 text-accent-amber">Decision</th>
                 <th className="label-uppercase pb-3 pr-4 text-text-hints">Alternative</th>
                 <th className="label-uppercase pb-3 text-text-hints">Why</th>
               </tr>

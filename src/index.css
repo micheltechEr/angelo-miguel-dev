@@ -1,17 +1,32 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg-primary: #050f1e;
-  --color-bg-secondary: #0f1923;
-  --color-accent-teal: #00d9a3;
-  --color-accent-indigo: #6366f1;
-  --color-accent-gold: #a78bfa;
-  --color-text-primary: #f5f5f4;
-  --color-text-secondary: #a1a1a1;
-  --color-text-hints: #6b7280;
+  /* Base — deep ink */
+  --color-bg-primary: #080809;
+  --color-bg-secondary: #0d0d0f;
+  --color-bg-elevated: #121215;
+
+  /* Primary accent — clean modern teal */
+  --color-accent-teal: #1fe0b6;
+  --color-accent-teal-dim: rgba(31, 224, 182, 0.08);
+
+  /* Secondary subtle accent */
+  --color-accent-amber: #1fe0b6;
+  --color-accent-amber-dim: rgba(31, 224, 182, 0.08);
+
+  /* Violet kept restrained */
+  --color-accent-violet: #a880ff;
+  --color-accent-violet-dim: rgba(168, 128, 255, 0.08);
+
+  --color-text-primary: #f4f3ef;
+  --color-text-secondary: #a3a19b;
+  --color-text-hints: #5a5853;
   --color-border-subtle: rgba(255, 255, 255, 0.06);
-  --font-family-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --color-border-strong: rgba(255, 255, 255, 0.12);
+
+  --font-family-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
   --font-family-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-family-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer base {
@@ -24,32 +39,51 @@
     color: var(--color-text-primary);
     font-family: var(--font-family-sans);
     font-weight: 400;
-    line-height: 1.75;
+    line-height: 1.7;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
   }
+
+  /* selection in brand color */
+  ::selection { background: var(--color-accent-teal); color: #080809; }
 
   a { color: inherit; text-decoration: none; }
 
   *:focus-visible {
-    outline: 2px solid var(--color-accent-indigo);
-    outline-offset: 2px;
+    outline: 2px solid var(--color-accent-teal);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* Respect reduced motion globally */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
 @layer utilities {
-  .max-width-readable { max-width: 65ch; }
-  .section-spacing { padding-top: 6rem; padding-bottom: 6rem; }
+  .max-width-readable { max-width: 62ch; }
+  .section-spacing { padding-top: 8rem; padding-bottom: 8rem; }
+
   .heading-xl {
-    font-size: clamp(36px, 5vw, 54px);
+    font-size: clamp(48px, 8vw, 98px);
     font-weight: 700;
-    letter-spacing: -0.03em;
-    line-height: 1.1;
+    letter-spacing: -0.04em;
+    line-height: 0.95;
+    font-family: var(--font-family-display);
   }
   .heading-section {
-    font-size: clamp(28px, 3.5vw, 40px);
+    font-size: clamp(32px, 4.5vw, 56px);
     font-weight: 700;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.03em;
+    line-height: 1.02;
+    font-family: var(--font-family-display);
   }
   .heading-card {
     font-size: 22px;
@@ -57,9 +91,150 @@
     letter-spacing: -0.01em;
   }
   .label-uppercase {
-    font-size: 14px;
+    font-size: 11px;
     font-weight: 700;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
+  }
+  .font-mono { font-family: var(--font-family-mono); }
+
+  /* Cyber backdrop grid */
+  .cyber-grid {
+    background-size: 44px 44px;
+    background-image: 
+      linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    mask-image: radial-gradient(ellipse at 50% 50%, black 40%, transparent 90%);
+  }
+
+  /* Ambient organic glow sphere */
+  .glow-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(140px);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.45;
+    mix-blend-mode: screen;
+  }
+  
+  .glow-orb-primary {
+    background: radial-gradient(circle, var(--color-accent-teal) 0%, transparent 70%);
+  }
+  
+  .glow-orb-secondary {
+    background: radial-gradient(circle, var(--color-accent-violet) 0%, transparent 70%);
+  }
+
+  /* Reveal-on-scroll primitive */
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+    will-change: opacity, transform;
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Clean subtle hairline divider */
+  .hairline {
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--color-border-strong) 30%,
+      var(--color-border-strong) 70%,
+      transparent
+    );
+    opacity: 0.7;
+  }
+
+  /* Cyber Tech Card corners & style */
+  .tech-card {
+    position: relative;
+    border: 1px solid var(--color-border-subtle);
+    background-color: var(--color-bg-secondary);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    isolation: isolate;
+  }
+
+  .tech-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(31, 224, 182, 0.3);
+    box-shadow: 
+      0 12px 30px -10px rgba(0, 0, 0, 0.6), 
+      0 0 20px -5px rgba(31, 224, 182, 0.08);
+  }
+
+  /* Dynamic corner marks shown on hover */
+  .tech-card::before, .tech-card::after {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+  }
+  
+  .tech-card::before {
+    top: -1px;
+    left: -1px;
+    border-top: 1.5px solid var(--color-accent-teal);
+    border-left: 1.5px solid var(--color-accent-teal);
+    transform: translate(2px, 2px);
+  }
+  
+  .tech-card::after {
+    bottom: -1px;
+    right: -1px;
+    border-bottom: 1.5px solid var(--color-accent-teal);
+    border-right: 1.5px solid var(--color-accent-teal);
+    transform: translate(-2px, -2px);
+  }
+
+  .tech-card:hover::before, .tech-card:hover::after {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+
+  /* ---------- Preloader ---------- */
+  .preloader-bar {
+    background: var(--color-accent-teal);
+  }
+
+  .preloader-draw {
+    stroke-dasharray: 1em;
+    stroke-dashoffset: 1em;
+  }
+
+  .preloader-exit {
+    animation: preloader-curve 1s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+    transform-origin: center top;
+  }
+  @keyframes preloader-curve {
+    0% {
+      transform: translateY(0) scaleY(1);
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+    100% {
+      transform: translateY(-100%) scaleY(0.86);
+      border-bottom-left-radius: 50% 14vh;
+      border-bottom-right-radius: 50% 14vh;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .preloader-exit {
+      animation-duration: 0.2s;
+    }
+    .preloader-draw {
+      stroke-dashoffset: 0 !important;
+    }
   }
 }

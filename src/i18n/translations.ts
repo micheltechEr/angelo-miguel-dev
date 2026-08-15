@@ -8,6 +8,11 @@ export interface Translations {
     ctaProjects: string;
     ctaCvView: string;
   };
+  preloader: {
+    label: string;
+    tagline: string;
+    boot: string[];
+  };
   thinking: {
     title: string;
     cards: Array<{
@@ -81,12 +86,18 @@ export interface Translations {
   };
   footer: {
     cta: string;
+    sub: string;
     email: string;
     copyright: string;
     solucoesLink: string;
   };
   nav: {
     languageToggle: string;
+    projects: string;
+    thinking: string;
+    depth: string;
+    contact: string;
+    role: string;
   };
   explicadorAgil: {
     title: string;
@@ -117,38 +128,48 @@ const en: Translations = {
     name: "Ângelo Miguel",
     tagline: "Full Stack Web Developer",
     description:
-      "Systems that scale. Decisions over trends. Monoliths. Multitenancy. When NOT to use AI.",
+      "Full Stack Web Developer specialized in Node.js, TypeScript, React, and Laravel. Building reliable web applications, clean data architectures, and scalable APIs.",
     ctaProjects: "Projects",
     ctaCvView: "View CV",
   },
+  preloader: {
+    label: "Loading portfolio",
+    tagline: "Full Stack Developer",
+    boot: [
+      "init architecture",
+      "load modules",
+      "secure auth",
+      "ready",
+    ],
+  },
   thinking: {
-    title: "What I actually do",
+    title: "Engineering Mindset",
     cards: [
       {
-        title: "Fullstack Architecture",
+        title: "Pragmatic System Architecture",
         subtitle: "Node.js / Laravel / TypeScript",
         lines: [
-          "Monolith patterns, security, product thinking",
+          "Focusing on modular monoliths, clear domain boundaries, and security before adding unnecessary complexity.",
         ],
-        accent: "border-t-accent-teal",
+        accent: "border-t border-accent-teal/40",
         size: "large",
       },
       {
-        title: "AI-Ready Systems",
-        subtitle: "MCP / RAG / Decision Arch",
+        title: "Purposeful AI Integration",
+        subtitle: "MCP / RAG / Vector & Relational DBs",
         lines: [
-          "When NOT to use AI. Integration with providers.",
+          "Integrating LLMs and vector search where they solve real user problems, keeping plain SQL queries when speed and accuracy matter.",
         ],
-        accent: "border-t-accent-indigo",
+        accent: "border-t border-accent-teal/40",
         size: "small",
       },
       {
-        title: "Design Without AI Artifacts",
-        subtitle: "Blade / Tailwind / UX",
+        title: "Clean & Intuitive Interfaces",
+        subtitle: "React / Tailwind / UX",
         lines: [
-          "Distinctive palettes. Micro-interactions. No templates.",
+          "Prioritizing strong typography, responsive layouts, and smooth interactions designed for real usability.",
         ],
-        accent: "border-t-accent-gold",
+        accent: "border-t border-accent-teal/40",
         size: "small",
       },
     ],
@@ -171,7 +192,7 @@ const en: Translations = {
         title: "CREATOR HUB",
         description: "Monolith. Supabase. Next.js.",
         tags: ["Node", "TS", "Supabase"],
-        accent: "border-t-accent-indigo",
+        accent: "border-t-accent-violet",
         size: "small",
         linkLabel: "Visit",
         liveUrl: "https://creatorhub-g4pn.onrender.com/",
@@ -181,7 +202,7 @@ const en: Translations = {
         title: "AUTO MATCH",
         description: "Monolith. Next.js. React. TypeScript. PostgreSQL.",
         tags: ["Next.js", "React", "TypeScript", "PostgreSQL"],
-        accent: "border-t-accent-gold",
+        accent: "border-t-accent-amber",
         size: "small",
         linkLabel: "Details",
         liveUrl: "https://match-auto-1.onrender.com/",
@@ -190,7 +211,7 @@ const en: Translations = {
     cta: "View on GitHub",
   },
   technicalDepth: {
-    title: "Depth Areas",
+    title: "Where I go deep",
     areas: [
       {
         title: "Architecture Patterns",
@@ -210,7 +231,7 @@ const en: Translations = {
           "Laravel (PHP)",
           "REST & GraphQL APIs",
         ],
-        accent: "border-t-accent-gold",
+        accent: "border-t-accent-amber",
         size: "medium",
       },
       {
@@ -222,7 +243,7 @@ const en: Translations = {
           "Multitenancy",
           "Feature flags",
         ],
-        accent: "border-t-accent-indigo",
+        accent: "border-t-accent-violet",
         size: "medium",
       },
       {
@@ -234,7 +255,7 @@ const en: Translations = {
           "Micro-interactions",
           "WCAG A11Y",
         ],
-        accent: "border-t-accent-gold",
+        accent: "border-t-accent-amber",
         size: "medium",
       },
       {
@@ -246,7 +267,7 @@ const en: Translations = {
           "MCP (Model Context Protocol)",
           "Any AI model integration (OpenAI, Anthropic, etc.)",
         ],
-        accent: "border-t-accent-indigo",
+        accent: "border-t-accent-violet",
         size: "full",
       },
     ],
@@ -325,10 +346,10 @@ const en: Translations = {
     },
     niches: [
       { name: "Dentistry", accent: "border-t-accent-teal", sites: [{ name: "Instituto Sorriso Prime", url: "https://institutosorrisoprime.vercel.app/" }, { name: "Clínica OdontoViva", url: "https://clnicaodontoviva.vercel.app/" }] },
-      { name: "Law", accent: "border-t-accent-indigo" },
-      { name: "Real Estate", accent: "border-t-accent-gold" },
+      { name: "Law", accent: "border-t-accent-violet" },
+      { name: "Real Estate", accent: "border-t-accent-amber" },
       { name: "Medical Clinics", accent: "border-t-accent-teal" },
-      { name: "Gyms", accent: "border-t-accent-indigo" },
+      { name: "Gyms", accent: "border-t-accent-violet" },
     ],
     cta: {
       message: "We don't use pre-defined templates.\nEach project is planned according to business goals.",
@@ -338,13 +359,19 @@ const en: Translations = {
     },
   },
   footer: {
-    cta: "Let\u2019s talk",
+    cta: "Let's build something that lasts",
+    sub: "Got a system that needs to scale, a monolith that needs untangling, or an idea that just needs the right architecture? My inbox is open.",
     email: "angelomiguelrib@gmail.com",
     copyright: "Ângelo Miguel",
     solucoesLink: "Need a website? →",
   },
   nav: {
     languageToggle: "PT",
+    projects: "Projects",
+    thinking: "How I think",
+    depth: "Depth",
+    contact: "Contact",
+    role: "Full Stack Dev",
   },
   solucoes: {
     badge: "Web Solutions",
@@ -369,7 +396,7 @@ const en: Translations = {
         },
         {
           question: "What if I need changes after the site is live?",
-          answer: "Changes are covered within the first 3 months after delivery. Beyond that, a new budget will be quoted.",
+          answer: "Changes are covered within the first 30 days after delivery. Beyond that, a new budget will be quoted.",
         },
       ],
       cta: {
@@ -412,38 +439,48 @@ const pt: Translations = {
     name: "Ângelo Miguel",
     tagline: "Desenvolvedor Web Full Stack",
     description:
-      "Sistemas que escalam. Decis\u00f5es sobre modas passageiras. Monolitos. Multiten\u00eancia. Quando N\u00c3O usar IA.",
+      "Desenvolvedor Web Full Stack focado em Node.js, TypeScript, React e Laravel. Especializado na construção de aplicações web robustas, arquitetura de dados e APIs escaláveis.",
     ctaProjects: "Projetos",
     ctaCvView: "Visualizar CV",
   },
+  preloader: {
+    label: "Carregando portfólio",
+    tagline: "Desenvolvedor Full Stack",
+    boot: [
+      "inicializando arquitetura",
+      "carregando módulos",
+      "autenticação segura",
+      "pronto",
+    ],
+  },
   thinking: {
-    title: "O que voc\u00ea realmente faz",
+    title: "Como Penso e Construo",
     cards: [
       {
-        title: "Arquitetura Fullstack",
+        title: "Arquitetura Pragmática de Sistemas",
         subtitle: "Node.js / Laravel / TypeScript",
         lines: [
-          "Padr\u00f5es de monolitos, seguran\u00e7a, pensamento de produto",
+          "Foco em monolitos modulares, separação clara de domínios e autenticação sólida antes de introduzir complexidade desnecessária.",
         ],
-        accent: "border-t-accent-teal",
+        accent: "border-t border-accent-teal/40",
         size: "large",
       },
       {
-        title: "Sistemas Prontos para IA",
-        subtitle: "MCP / RAG / Decis\u00e3o Arquitetural",
+        title: "Integração Prática de IA",
+        subtitle: "MCP / RAG / Bancos Vetoriais e Relacionais",
         lines: [
-          "Quando N\u00c3O usar IA. Integra\u00e7\u00e3o com provedores.",
+          "Integração de LLMs e busca vetorial onde agregam valor real, priorizando consultas SQL diretas quando oferecem maior velocidade e precisão.",
         ],
-        accent: "border-t-accent-indigo",
+        accent: "border-t border-accent-teal/40",
         size: "small",
       },
       {
-        title: "Design Sem Apar\u00eancia de IA",
-        subtitle: "Blade / Tailwind / UX",
+        title: "Interfaces Limpas e Intuitivas",
+        subtitle: "React / Tailwind / UX",
         lines: [
-          "Paletas diferenciadas. Micro-intera\u00e7\u00f5es. Nada gen\u00e9rico.",
+          "Prioridade para tipografia clara, layouts responsivos e interações fluidas focadas na experiência do usuário.",
         ],
-        accent: "border-t-accent-gold",
+        accent: "border-t border-accent-teal/40",
         size: "small",
       },
     ],
@@ -466,7 +503,7 @@ const pt: Translations = {
         title: "CREATOR HUB",
         description: "Monolito. Supabase. Next.js.",
         tags: ["Node", "TS", "Supabase"],
-        accent: "border-t-accent-indigo",
+        accent: "border-t-accent-violet",
         size: "small",
         linkLabel: "Visitar",
         liveUrl: "https://creatorhub-g4pn.onrender.com/",
@@ -476,7 +513,7 @@ const pt: Translations = {
         title: "AUTO MATCH",
         description: "Monolito. Next.js. React. TypeScript. PostgreSQL.",
         tags: ["Next.js", "React", "TypeScript", "PostgreSQL"],
-        accent: "border-t-accent-gold",
+        accent: "border-t-accent-amber",
         size: "small",
         linkLabel: "Detalhes",
         liveUrl: "https://match-auto-1.onrender.com/",
@@ -485,7 +522,7 @@ const pt: Translations = {
     cta: "Ver no GitHub",
   },
   technicalDepth: {
-    title: "\u00c1reas de Profundidade",
+    title: "Onde eu vou fundo",
     areas: [
       {
         title: "Padr\u00f5es de Arquitetura",
@@ -505,7 +542,7 @@ const pt: Translations = {
           "Laravel (PHP)",
           "APIs REST & GraphQL",
         ],
-        accent: "border-t-accent-gold",
+        accent: "border-t-accent-amber",
         size: "medium",
       },
       {
@@ -517,7 +554,7 @@ const pt: Translations = {
           "Multiten\u00eancia",
           "Feature flags",
         ],
-        accent: "border-t-accent-indigo",
+        accent: "border-t-accent-violet",
         size: "medium",
       },
       {
@@ -529,7 +566,7 @@ const pt: Translations = {
           "Micro-intera\u00e7\u00f5es",
           "Acessibilidade WCAG",
         ],
-        accent: "border-t-accent-gold",
+        accent: "border-t-accent-amber",
         size: "medium",
       },
       {
@@ -541,7 +578,7 @@ const pt: Translations = {
           "MCP (Model Context Protocol)",
           "Integra\u00e7\u00e3o com qualquer modelo de IA (OpenAI, Anthropic, etc)",
         ],
-        accent: "border-t-accent-indigo",
+        accent: "border-t-accent-violet",
         size: "full",
       },
     ],
@@ -620,10 +657,10 @@ const pt: Translations = {
     },
     niches: [
       { name: "Odontologia", accent: "border-t-accent-teal", sites: [{ name: "Instituto Sorriso Prime", url: "https://institutosorrisoprime.vercel.app/" }, { name: "Clínica OdontoViva", url: "https://clnicaodontoviva.vercel.app/" }] },
-      { name: "Advocacia", accent: "border-t-accent-indigo" },
-      { name: "Imobiliárias", accent: "border-t-accent-gold" },
+      { name: "Advocacia", accent: "border-t-accent-violet" },
+      { name: "Imobiliárias", accent: "border-t-accent-amber" },
       { name: "Clínicas Médicas", accent: "border-t-accent-teal" },
-      { name: "Academias", accent: "border-t-accent-indigo" },
+      { name: "Academias", accent: "border-t-accent-violet" },
     ],
     cta: {
       message: "Não utilizamos modelos pré-definidos.\nCada projeto é planejado conforme os objetivos do negócio.",
@@ -633,13 +670,19 @@ const pt: Translations = {
     },
   },
   footer: {
-    cta: "Vamos conversar",
+    cta: "Vamos construir algo que dura",
+    sub: "Tem um sistema pra escalar, um monolito pra desembaraçar ou uma ideia que só precisa da arquitetura certa? Minha caixa de entrada está aberta.",
     email: "angelomiguelrib@gmail.com",
     copyright: "Ângelo Miguel",
     solucoesLink: "Precisa de um site? →",
   },
   nav: {
     languageToggle: "EN",
+    projects: "Projetos",
+    thinking: "Como penso",
+    depth: "Profundidade",
+    contact: "Contato",
+    role: "Dev Full Stack",
   },
   solucoes: {
     badge: "Soluções Web",
@@ -664,7 +707,7 @@ const pt: Translations = {
         },
         {
           question: "E se eu precisar de mudanças depois do site no ar?",
-          answer: "Mudanças estão cobertas nos primeiros 3 meses após a entrega. Após esse período, um novo orçamento será cotado.",
+          answer: "Mudanças estão cobertas nos primeiros 30 dias após a entrega. Após esse período, um novo orçamento será cotado.",
         },
       ],
       cta: {

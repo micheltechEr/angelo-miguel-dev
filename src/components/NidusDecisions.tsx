@@ -33,9 +33,9 @@ export default function NidusDecisions() {
           {t.nidusDecisions.stack.map((item) => (
             <div
               key={item.label}
-              className="rounded-[8px] border border-border-subtle border-t-accent-gold bg-bg-primary p-4"
+              className="rounded-[8px] border border-border-subtle border-t-accent-amber bg-bg-primary p-4"
             >
-              <span className="label-uppercase text-accent-gold">
+              <span className="label-uppercase text-accent-amber">
                 {item.label}
               </span>
               <p className="mt-2 text-sm text-text-secondary">{item.value}</p>

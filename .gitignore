@@ -27,3 +27,6 @@ dist-ssr
 *.yml
 tmp_snapshot_code.js
 *.png
+
+.vercel
+.env*

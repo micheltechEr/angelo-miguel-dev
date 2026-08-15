@@ -29,7 +29,7 @@ function AccordionItem({
       >
         <span className="h-px flex-1 bg-border-subtle" />
         <span
-          className={`label-uppercase text-accent-gold transition-colors duration-200 ${
+          className={`label-uppercase text-accent-amber transition-colors duration-200 ${
             open ? "text-accent-teal" : ""
           }`}
         >
@@ -45,7 +45,7 @@ function AccordionItem({
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className={`text-accent-gold transition-transform duration-300 ${
+          className={`text-accent-amber transition-transform duration-300 ${
             open ? "rotate-180" : ""
           }`}
         >
@@ -73,10 +73,10 @@ export default function ServicesByNiche() {
   return (
     <section id="services-by-niche" className="section-spacing px-6">
       <div className="mx-auto max-w-5xl">
-        <h2 className="heading-section text-text-primary">
+        <h2 className="heading-section text-text-primary text-center sm:text-left">
           {t.servicesByNiche.title}
         </h2>
-        <p className="mt-3 text-sm leading-relaxed text-text-secondary">
+        <p className="mt-3 text-sm leading-relaxed text-text-secondary text-center sm:text-left">
           {t.servicesByNiche.description}
         </p>
 
@@ -112,7 +112,7 @@ export default function ServicesByNiche() {
                       >
                         {site.name}
                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                          <path d="M18 13 v6 a2 2 0 0 1 -2 2 H5 a2 2 0 0 1 -2 -2 V8 a2 2 0 0 1 2 -2 h6" />
                           <polyline points="15 3 21 3 21 9" />
                           <line x1="10" y1="14" x2="21" y2="3" />
                         </svg>
@@ -134,7 +134,7 @@ export default function ServicesByNiche() {
                       key={c}
                       className="flex items-start gap-2 text-sm text-text-secondary"
                     >
-                      <span className="mt-0.5 text-accent-gold shrink-0">✦</span>
+                      <span className="mt-0.5 text-accent-amber shrink-0">✦</span>
                       {c}
                     </li>
                   ))}
@@ -157,7 +157,7 @@ export default function ServicesByNiche() {
             >
               {t.servicesByNiche.cta.button}
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                <path d="M18 13 v6 a2 2 0 0 1 -2 2 H5 a2 2 0 0 1 -2 -2 V8 a2 2 0 0 1 2 -2 h6" />
                 <polyline points="15 3 21 3 21 9" />
                 <line x1="10" y1="14" x2="21" y2="3" />
               </svg>

@@ -1,57 +1,69 @@
 import { useLanguage } from "../i18n/LanguageContext";
+import Reveal from "./Reveal";
 
 export default function Thinking() {
   const { t } = useLanguage();
   const cards = t.thinking.cards;
 
-  // Card 0 = large (Fullstack), cards 1-2 = small (AI, Design)
   const largeCard = cards[0];
   const smallCards = cards.slice(1);
 
   return (
-    <section className="bg-bg-secondary section-spacing px-6">
-      <div className="mx-auto max-w-5xl">
-        <h2 className="heading-section text-text-primary">
-          {t.thinking.title}
-        </h2>
+    <section id="thinking" className="bg-bg-secondary section-spacing px-6 relative overflow-hidden">
+      {/* Subtle grid background layer */}
+      <div className="absolute inset-0 cyber-grid opacity-40 pointer-events-none" />
+      <div className="glow-orb glow-orb-secondary absolute top-1/4 -right-80 h-[500px] w-[500px]" />
+
+      <div className="mx-auto max-w-5xl relative z-10">
+        <Reveal>
+          <p className="label-uppercase text-accent-teal text-center sm:text-left">01 — Mindset</p>
+          <h2 className="heading-section mt-3 text-text-primary text-center sm:text-left">
+            {t.thinking.title}
+          </h2>
+        </Reveal>
 
         <div className="mt-12 space-y-6">
-          {/* Large card — Fullstack Architecture, teal border */}
-          <article
-            className={`rounded-[8px] border border-border-subtle ${largeCard.accent} bg-bg-primary p-8 transition-all duration-200 hover:scale-[1.01] hover:opacity-95`}
-          >
-            <h3 className="text-[clamp(20px,2vw,28px)] font-semibold text-text-primary">
-              {largeCard.title}
-            </h3>
-            <p className="mt-2 text-sm text-accent-teal font-mono">
-              {largeCard.subtitle}
-            </p>
-            {largeCard.lines.map((line, j) => (
-              <p key={j} className="mt-3 text-base leading-relaxed text-text-secondary">
-                {line}
+          <Reveal as="article">
+            <article
+              className={`tech-card rounded-[8px] p-8 text-center sm:text-left border-l-2 border-l-accent-teal`}
+            >
+              <h3 className="text-[clamp(22px,2.4vw,32px)] font-semibold text-text-primary">
+                {largeCard.title}
+              </h3>
+              <p className="mt-2 text-xs text-accent-teal font-mono tracking-wider font-semibold uppercase">
+                {largeCard.subtitle}
               </p>
-            ))}
-          </article>
+              {largeCard.lines.map((line, j) => (
+                <p key={j} className="mt-4 text-base leading-relaxed text-text-secondary">
+                  {line}
+                </p>
+              ))}
+            </article>
+          </Reveal>
 
-          {/* Two small cards side by side on desktop */}
           <div className="grid gap-6 md:grid-cols-2">
             {smallCards.map((card, i) => (
-              <article
-                key={i}
-                className={`rounded-[8px] border border-border-subtle ${card.accent} bg-bg-primary p-6 transition-all duration-200 hover:scale-[1.01] hover:opacity-95`}
-              >
-                <h3 className="heading-card text-text-primary">
-                  {card.title}
-                </h3>
-                <p className="mt-2 text-sm text-accent-indigo font-mono">
-                  {card.subtitle}
-                </p>
-                {card.lines.map((line, j) => (
-                  <p key={j} className="mt-3 text-sm leading-relaxed text-text-secondary">
-                    {line}
+              <Reveal as="article" key={i} delay={i * 90}>
+                <article
+                  className={`tech-card h-full rounded-[8px] p-6 text-center sm:text-left ${
+                    i === 0 ? "border-l-2 border-l-accent-violet" : "border-l-2 border-l-accent-teal"
+                  }`}
+                >
+                  <h3 className="heading-card text-text-primary">
+                    {card.title}
+                  </h3>
+                  <p className={`mt-2 text-xs font-mono tracking-wider font-semibold uppercase ${
+                    i === 0 ? "text-accent-violet" : "text-accent-teal"
+                  }`}>
+                    {card.subtitle}
                   </p>
-                ))}
-              </article>
+                  {card.lines.map((line, j) => (
+                    <p key={j} className="mt-3 text-sm leading-relaxed text-text-secondary">
+                      {line}
+                    </p>
+                  ))}
+                </article>
+              </Reveal>
             ))}
           </div>
         </div>
