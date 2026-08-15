@@ -15,6 +15,9 @@ interface VercelProjectsProps {
   isCarousel?: boolean;
 }
 
+const CACHE_KEY = "VERCEL_PROJECTS_CACHE_48H";
+const CACHE_DURATION_MS = 48 * 60 * 60 * 1000; // 48 hours in ms
+
 const FALLBACK_PROJECTS: Project[] = [
   { name: "psico_patricia", url: "https://psicopatricia.vercel.app" },
   { name: "convec-solar", url: "https://convec-solar.vercel.app" },
@@ -58,7 +61,7 @@ export default function VercelProjects({
   const [projects, setProjects] = useState<Project[]>(CLEAN_FALLBACKS);
   const [isLive, setIsLive] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [activePreview, setActivePreview] = useState<string | null>(null);
+  const [deviceMode, setDeviceMode] = useState<"desktop" | "mobile">("desktop");
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -71,10 +74,27 @@ export default function VercelProjects({
 
   useEffect(() => {
     async function fetchProjects() {
+      // 1. Check 48h localStorage cache
+      try {
+        const cachedRaw = localStorage.getItem(CACHE_KEY);
+        if (cachedRaw) {
+          const cachedData = JSON.parse(cachedRaw);
+          const age = Date.now() - (cachedData.timestamp || 0);
+          if (age < CACHE_DURATION_MS && cachedData.projects?.length > 0) {
+            setProjects(cachedData.projects);
+            setIsLive(cachedData.isLive ?? true);
+            setLoading(false);
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn("Cache parse error, re-fetching:", err);
+      }
+
+      // 2. Fetch from Vercel API if cache missing/expired
       const token = import.meta.env.VITE_VERCEL_TOKEN;
 
       if (!token) {
-        console.warn("Vercel token not found in build env. Using fallback cache.");
         setProjects(CLEAN_FALLBACKS);
         setIsLive(false);
         setLoading(false);
@@ -114,12 +134,24 @@ export default function VercelProjects({
             };
           });
 
-        if (filtered.length > 0) {
-          setProjects(filtered);
-          setIsLive(true);
-        } else {
-          setProjects(CLEAN_FALLBACKS);
-          setIsLive(false);
+        const finalProjects = filtered.length > 0 ? filtered : CLEAN_FALLBACKS;
+        const liveStatus = filtered.length > 0;
+
+        setProjects(finalProjects);
+        setIsLive(liveStatus);
+
+        // Save to 48h localStorage cache
+        try {
+          localStorage.setItem(
+            CACHE_KEY,
+            JSON.stringify({
+              timestamp: Date.now(),
+              projects: finalProjects,
+              isLive: liveStatus
+            })
+          );
+        } catch (e) {
+          console.warn("Failed to write to localStorage:", e);
         }
       } catch (err) {
         console.error("Failed to fetch live Vercel projects:", err);
@@ -137,6 +169,13 @@ export default function VercelProjects({
     return str
       .replace(/[_-]/g, " ")
       .replace(/\b\w/g, (c) => c.toUpperCase());
+  };
+
+  const getScreenshotUrl = (url: string, mode: "desktop" | "mobile") => {
+    if (mode === "mobile") {
+      return `https://api.microlink.io/?url=${encodeURIComponent(url)}&screenshot=true&viewport.isMobile=true&embed=screenshot.url`;
+    }
+    return `https://image.thum.io/get/width/600/crop/800/${url}`;
   };
 
   const displayedProjects = limit ? projects.slice(0, limit) : projects;
@@ -158,28 +197,53 @@ export default function VercelProjects({
             </div>
 
             <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 rounded-full border border-border-subtle bg-bg-secondary/60 px-4 py-1.5 font-mono text-[10px] text-text-secondary backdrop-blur-sm">
+              {/* Device format toggle */}
+              <div className="flex items-center rounded-full border border-border-subtle bg-bg-secondary/80 p-0.5 font-mono text-[10px]">
+                <button
+                  onClick={() => setDeviceMode("desktop")}
+                  className={`rounded-full px-3 py-1 transition-all ${
+                    deviceMode === "desktop"
+                      ? "bg-accent-teal text-bg-primary font-bold shadow-sm"
+                      : "text-text-secondary hover:text-text-primary"
+                  }`}
+                >
+                  💻 DESKTOP
+                </button>
+                <button
+                  onClick={() => setDeviceMode("mobile")}
+                  className={`rounded-full px-3 py-1 transition-all ${
+                    deviceMode === "mobile"
+                      ? "bg-accent-teal text-bg-primary font-bold shadow-sm"
+                      : "text-text-secondary hover:text-text-primary"
+                  }`}
+                >
+                  📱 MOBILE
+                </button>
+              </div>
+
+              {/* Status badge */}
+              <div className="hidden sm:flex items-center gap-2 rounded-full border border-border-subtle bg-bg-secondary/60 px-3 py-1 font-mono text-[10px] text-text-secondary backdrop-blur-sm">
                 <span className={`h-2 w-2 rounded-full ${isLive ? "bg-emerald-500 animate-pulse" : "bg-accent-amber"}`} />
                 <span className="uppercase tracking-wider">
                   {isLive 
-                    ? (language === "en" ? "LIVE COMPILING" : "CONEXÃO AO VIVO") 
-                    : (language === "en" ? "OFFLINE CACHE" : "LOCAL CACHE ACTIVATED")}
+                    ? (language === "en" ? "LIVE CACHED" : "CONEXÃO ATIVA (48h)") 
+                    : (language === "en" ? "LOCAL CACHE" : "LOCAL CACHE ACTIVATED")}
                 </span>
               </div>
 
               {isCarousel && (
-                <div className="flex items-center gap-1.5 ml-2">
+                <div className="flex items-center gap-1.5 ml-1">
                   <button
                     onClick={() => scroll("left")}
                     aria-label="Previous Project"
-                    className="flex h-9 w-9 items-center justify-center rounded-full border border-border-subtle bg-bg-secondary/80 font-mono text-sm text-text-secondary hover:border-accent-teal hover:text-accent-teal transition-colors active:scale-95"
+                    className="flex h-8 w-8 items-center justify-center rounded-full border border-border-subtle bg-bg-secondary/80 font-mono text-xs text-text-secondary hover:border-accent-teal hover:text-accent-teal transition-colors active:scale-95"
                   >
                     ←
                   </button>
                   <button
                     onClick={() => scroll("right")}
                     aria-label="Next Project"
-                    className="flex h-9 w-9 items-center justify-center rounded-full border border-border-subtle bg-bg-secondary/80 font-mono text-sm text-text-secondary hover:border-accent-teal hover:text-accent-teal transition-colors active:scale-95"
+                    className="flex h-8 w-8 items-center justify-center rounded-full border border-border-subtle bg-bg-secondary/80 font-mono text-xs text-text-secondary hover:border-accent-teal hover:text-accent-teal transition-colors active:scale-95"
                   >
                     →
                   </button>
@@ -202,14 +266,14 @@ export default function VercelProjects({
                 className="mt-12 flex gap-6 overflow-x-auto snap-x snap-mandatory no-scrollbar py-2 px-1 scroll-smooth"
               >
                 {displayedProjects.map((project, idx) => {
-                  const isPreviewing = activePreview === project.name;
+                  const screenshotUrl = getScreenshotUrl(project.url, deviceMode);
                   return (
                     <div
                       key={project.name}
                       className="snap-start shrink-0 w-[290px] sm:w-[320px] lg:w-[340px]"
                     >
                       <Reveal delay={idx * 40}>
-                        <div className="tech-card flex h-[380px] flex-col rounded-[8px] p-5">
+                        <div className="tech-card flex h-[410px] flex-col rounded-[8px] p-5">
                           {/* Header */}
                           <div className="flex items-center justify-between border-b border-border-subtle pb-3">
                             <span className="font-mono text-[9px] text-text-hints uppercase tracking-widest">
@@ -218,47 +282,47 @@ export default function VercelProjects({
                             <span className="h-1.5 w-1.5 rounded-full bg-accent-teal" />
                           </div>
 
-                          {/* Content */}
-                          <div className="mt-4">
-                            <h3 className="text-base font-semibold text-text-primary tracking-tight">
+                          {/* Title & URL */}
+                          <div className="mt-3">
+                            <h3 className="text-base font-semibold text-text-primary tracking-tight truncate">
                               {formatName(project.name)}
                             </h3>
-                            <p className="mt-1 text-xs font-mono text-text-hints truncate">
+                            <p className="mt-0.5 text-xs font-mono text-text-hints truncate">
                               {project.url.replace("https://", "")}
                             </p>
                           </div>
 
-                          {/* Embed Frame (Optimized Iframe) */}
-                          {isPreviewing && (
-                            <div className="mt-4 overflow-hidden rounded-[4px] border border-border-strong bg-black">
-                              <div className="flex items-center gap-1.5 bg-bg-secondary px-3 py-1.5 border-b border-border-subtle">
+                          {/* Direct Preview Image Header (Always visible) */}
+                          <div className="mt-4 overflow-hidden rounded-[6px] border border-border-strong bg-black">
+                            <div className="flex items-center justify-between bg-bg-secondary px-3 py-1.5 border-b border-border-subtle">
+                              <div className="flex items-center gap-1.5">
                                 <span className="h-1.5 w-1.5 rounded-full bg-red-500/80" />
                                 <span className="h-1.5 w-1.5 rounded-full bg-yellow-500/80" />
                                 <span className="h-1.5 w-1.5 rounded-full bg-green-500/80" />
-                                <span className="ml-2 font-mono text-[8px] text-text-hints truncate max-w-[120px]">
-                                  {project.url.replace("https://", "")}
-                                </span>
                               </div>
-                              <iframe
-                                src={project.url}
-                                title={project.name}
+                              <span className="font-mono text-[8px] text-text-hints truncate max-w-[140px]">
+                                {project.url.replace("https://", "")}
+                              </span>
+                            </div>
+
+                            <div className="relative h-[180px] w-full overflow-hidden bg-bg-elevated group">
+                              <img
+                                src={screenshotUrl}
+                                alt={project.name}
                                 loading="lazy"
-                                sandbox="allow-scripts allow-same-origin Allow-popups"
-                                className="h-[180px] w-full border-0 bg-white"
+                                className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                                onError={(e) => {
+                                  e.currentTarget.src = `https://api.microlink.io/?url=${encodeURIComponent(project.url)}&screenshot=true&embed=screenshot.url`;
+                                }}
                               />
                             </div>
-                          )}
+                          </div>
 
                           {/* Actions */}
-                          <div className="mt-auto flex items-center justify-between pt-5 gap-2 border-t border-border-subtle/40">
-                            <button
-                              onClick={() => setActivePreview(isPreviewing ? null : project.name)}
-                              className="inline-flex items-center gap-1.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-text-secondary hover:text-accent-teal transition-colors"
-                            >
-                              {isPreviewing 
-                                ? (language === "en" ? "CLOSE" : "FECHAR") 
-                                : (language === "en" ? "EMBED preview" : "VER PREVIEW")}
-                            </button>
+                          <div className="mt-auto flex items-center justify-between pt-4 gap-2 border-t border-border-subtle/40">
+                            <span className="font-mono text-[9px] uppercase tracking-wider text-text-hints">
+                              {deviceMode}
+                            </span>
 
                             <a
                               href={project.url}
@@ -266,7 +330,7 @@ export default function VercelProjects({
                               rel="noopener noreferrer"
                               className="inline-flex items-center gap-1 font-mono text-[10px] font-bold uppercase tracking-wider text-accent-teal hover:text-accent-teal/80"
                             >
-                              {language === "en" ? "VISIT" : "VISITAR"} ↗
+                              {language === "en" ? "VISIT SITE" : "VISITAR SITE"} ↗
                             </a>
                           </div>
                         </div>
@@ -279,7 +343,7 @@ export default function VercelProjects({
               /* Grid Layout */
               <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {displayedProjects.map((project, idx) => {
-                  const isPreviewing = activePreview === project.name;
+                  const screenshotUrl = getScreenshotUrl(project.url, deviceMode);
                   return (
                     <Reveal key={project.name} delay={idx * 40}>
                       <div className="tech-card flex h-full flex-col rounded-[8px] p-5">
@@ -291,47 +355,47 @@ export default function VercelProjects({
                           <span className="h-1.5 w-1.5 rounded-full bg-accent-teal" />
                         </div>
 
-                        {/* Content */}
-                        <div className="mt-4">
-                          <h3 className="text-base font-semibold text-text-primary tracking-tight">
+                        {/* Title & URL */}
+                        <div className="mt-3">
+                          <h3 className="text-base font-semibold text-text-primary tracking-tight truncate">
                             {formatName(project.name)}
                           </h3>
-                          <p className="mt-1 text-xs font-mono text-text-hints truncate">
+                          <p className="mt-0.5 text-xs font-mono text-text-hints truncate">
                             {project.url.replace("https://", "")}
                           </p>
                         </div>
 
-                        {/* Embed Frame (Optimized Iframe) */}
-                        {isPreviewing && (
-                          <div className="mt-4 overflow-hidden rounded-[4px] border border-border-strong bg-black">
-                            <div className="flex items-center gap-1.5 bg-bg-secondary px-3 py-1.5 border-b border-border-subtle">
+                        {/* Direct Preview Image Header (Always visible) */}
+                        <div className="mt-4 overflow-hidden rounded-[6px] border border-border-strong bg-black">
+                          <div className="flex items-center justify-between bg-bg-secondary px-3 py-1.5 border-b border-border-subtle">
+                            <div className="flex items-center gap-1.5">
                               <span className="h-1.5 w-1.5 rounded-full bg-red-500/80" />
                               <span className="h-1.5 w-1.5 rounded-full bg-yellow-500/80" />
                               <span className="h-1.5 w-1.5 rounded-full bg-green-500/80" />
-                              <span className="ml-2 font-mono text-[8px] text-text-hints truncate max-w-[120px]">
-                                {project.url.replace("https://", "")}
-                              </span>
                             </div>
-                            <iframe
-                              src={project.url}
-                              title={project.name}
+                            <span className="font-mono text-[8px] text-text-hints truncate max-w-[140px]">
+                              {project.url.replace("https://", "")}
+                            </span>
+                          </div>
+
+                          <div className="relative h-[200px] w-full overflow-hidden bg-bg-elevated group">
+                            <img
+                              src={screenshotUrl}
+                              alt={project.name}
                               loading="lazy"
-                              sandbox="allow-scripts allow-same-origin Allow-popups"
-                              className="h-[220px] w-full border-0 bg-white"
+                              className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                              onError={(e) => {
+                                e.currentTarget.src = `https://api.microlink.io/?url=${encodeURIComponent(project.url)}&screenshot=true&embed=screenshot.url`;
+                              }}
                             />
                           </div>
-                        )}
+                        </div>
 
                         {/* Actions */}
-                        <div className="mt-auto flex items-center justify-between pt-5 gap-2 border-t border-border-subtle/40 mt-4">
-                          <button
-                            onClick={() => setActivePreview(isPreviewing ? null : project.name)}
-                            className="inline-flex items-center gap-1.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-text-secondary hover:text-accent-teal transition-colors"
-                          >
-                            {isPreviewing 
-                              ? (language === "en" ? "CLOSE" : "FECHAR") 
-                              : (language === "en" ? "EMBED preview" : "VER PREVIEW")}
-                          </button>
+                        <div className="mt-auto flex items-center justify-between pt-4 gap-2 border-t border-border-subtle/40 mt-4">
+                          <span className="font-mono text-[9px] uppercase tracking-wider text-text-hints">
+                            {deviceMode} VIEW
+                          </span>
 
                           <a
                             href={project.url}
@@ -339,7 +403,7 @@ export default function VercelProjects({
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-1 font-mono text-[10px] font-bold uppercase tracking-wider text-accent-teal hover:text-accent-teal/80"
                           >
-                            {language === "en" ? "VISIT" : "VISITAR"} ↗
+                            {language === "en" ? "VISIT SITE" : "VISITAR SITE"} ↗
                           </a>
                         </div>
                       </div>
