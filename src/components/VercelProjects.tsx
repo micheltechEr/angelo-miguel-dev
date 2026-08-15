@@ -15,7 +15,7 @@ interface VercelProjectsProps {
   isCarousel?: boolean;
 }
 
-const CACHE_KEY = "VERCEL_PROJECTS_CACHE_48H";
+const CACHE_KEY = "VERCEL_PROJECTS_CACHE_48H_V2";
 const CACHE_DURATION_MS = 48 * 60 * 60 * 1000; // 48 hours
 
 const FALLBACK_PROJECTS: Project[] = [
@@ -51,6 +51,30 @@ const isExcluded = (name: string) => {
 
 const CLEAN_FALLBACKS = FALLBACK_PROJECTS.filter((p) => !isExcluded(p.name));
 
+const resolveProjectDomain = (p: any): string => {
+  const cleanName = p.name.replace(/[^a-zA-Z0-9_-]/g, "").toLowerCase();
+  const prodAlias: string[] = p.targets?.production?.alias || [];
+  const allAlias: string[] = p.alias || [];
+  const candidates = [...prodAlias, ...allAlias];
+
+  // Look for clean alias without git preview strings
+  const cleanCandidate = candidates.find((d: string) => {
+    const lower = d.toLowerCase();
+    return (
+      !lower.includes("-git-") &&
+      !lower.includes("-projects") &&
+      !lower.includes("vercel.build") &&
+      !lower.includes("preview")
+    );
+  });
+
+  if (cleanCandidate) {
+    return cleanCandidate.startsWith("http") ? cleanCandidate : `https://${cleanCandidate}`;
+  }
+
+  return `https://${cleanName}.vercel.app`;
+};
+
 export default function VercelProjects({
   limit,
   showSeeMore = false,
@@ -74,6 +98,11 @@ export default function VercelProjects({
 
   useEffect(() => {
     async function fetchProjects() {
+      // Clear legacy cache keys
+      try {
+        localStorage.removeItem("VERCEL_PROJECTS_CACHE_48H");
+      } catch (e) {}
+
       // 1. Check 48h localStorage cache
       try {
         const cachedRaw = localStorage.getItem(CACHE_KEY);
@@ -117,19 +146,9 @@ export default function VercelProjects({
         const filtered = apiProjects
           .filter((p: any) => !isExcluded(p.name))
           .map((p: any) => {
-            const alias = p.alias || [];
-            let domain = `${p.name}.vercel.app`;
-            if (alias.length > 0) {
-              domain = alias[0];
-            } else if (p.targets?.production?.alias?.length > 0) {
-              domain = p.targets.production.alias[0];
-            } else if (p.targets?.production?.url) {
-              domain = p.targets.production.url;
-            }
-
             return {
               name: p.name,
-              url: domain.startsWith("http") ? domain : `https://${domain}`,
+              url: resolveProjectDomain(p),
               updatedAt: p.updatedAt
             };
           });
