@@ -10,7 +10,7 @@ export default function SolucoesPage() {
   return (
     <>
       <SolucoesHero />
-      <VercelProjects limit={4} showSeeMore={true} />
+      <VercelProjects limit={4} showSeeMore={true} isCarousel={true} />
       <DiferenciaisSolucoes />
       <ExplicadorAgil config={t.solucoes.explicador} />
     </>

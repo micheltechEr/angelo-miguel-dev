@@ -71,6 +71,9 @@
   .max-width-readable { max-width: 62ch; }
   .section-spacing { padding-top: 8rem; padding-bottom: 8rem; }
 
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
   .heading-xl {
     font-size: clamp(48px, 8vw, 98px);
     font-weight: 700;
@@ -126,115 +129,15 @@
     background: radial-gradient(circle, var(--color-accent-violet) 0%, transparent 70%);
   }
 
-  /* Reveal-on-scroll primitive */
-  .reveal {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-    transition-delay: var(--reveal-delay, 0ms);
-    will-change: opacity, transform;
-  }
-  .reveal.is-visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  /* Clean subtle hairline divider */
-  .hairline {
-    height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      var(--color-border-strong) 30%,
-      var(--color-border-strong) 70%,
-      transparent
-    );
-    opacity: 0.7;
-  }
-
-  /* Cyber Tech Card corners & style */
   .tech-card {
-    position: relative;
+    background: var(--color-bg-secondary);
     border: 1px solid var(--color-border-subtle);
-    background-color: var(--color-bg-secondary);
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    isolation: isolate;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .tech-card:hover {
-    transform: translateY(-4px);
-    border-color: rgba(31, 224, 182, 0.3);
-    box-shadow: 
-      0 12px 30px -10px rgba(0, 0, 0, 0.6), 
-      0 0 20px -5px rgba(31, 224, 182, 0.08);
-  }
-
-  /* Dynamic corner marks shown on hover */
-  .tech-card::before, .tech-card::after {
-    content: '';
-    position: absolute;
-    width: 6px;
-    height: 6px;
-    opacity: 0;
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    pointer-events: none;
-  }
-  
-  .tech-card::before {
-    top: -1px;
-    left: -1px;
-    border-top: 1.5px solid var(--color-accent-teal);
-    border-left: 1.5px solid var(--color-accent-teal);
-    transform: translate(2px, 2px);
-  }
-  
-  .tech-card::after {
-    bottom: -1px;
-    right: -1px;
-    border-bottom: 1.5px solid var(--color-accent-teal);
-    border-right: 1.5px solid var(--color-accent-teal);
-    transform: translate(-2px, -2px);
-  }
-
-  .tech-card:hover::before, .tech-card:hover::after {
-    opacity: 1;
-    transform: translate(0, 0);
-  }
-
-  /* ---------- Preloader ---------- */
-  .preloader-bar {
-    background: var(--color-accent-teal);
-  }
-
-  .preloader-draw {
-    stroke-dasharray: 1em;
-    stroke-dashoffset: 1em;
-  }
-
-  .preloader-exit {
-    animation: preloader-curve 1s cubic-bezier(0.76, 0, 0.24, 1) forwards;
-    transform-origin: center top;
-  }
-  @keyframes preloader-curve {
-    0% {
-      transform: translateY(0) scaleY(1);
-      border-bottom-left-radius: 0;
-      border-bottom-right-radius: 0;
-    }
-    100% {
-      transform: translateY(-100%) scaleY(0.86);
-      border-bottom-left-radius: 50% 14vh;
-      border-bottom-right-radius: 50% 14vh;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .preloader-exit {
-      animation-duration: 0.2s;
-    }
-    .preloader-draw {
-      stroke-dashoffset: 0 !important;
-    }
+    border-color: var(--color-border-strong);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    transform: translateY(-2px);
   }
 }

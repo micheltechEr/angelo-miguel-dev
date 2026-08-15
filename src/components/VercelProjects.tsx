@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useLanguage } from "../i18n/LanguageContext";
 import { useRouter } from "../hooks/useRouter";
 import Reveal from "./Reveal";
@@ -12,6 +12,7 @@ interface Project {
 interface VercelProjectsProps {
   limit?: number;
   showSeeMore?: boolean;
+  isCarousel?: boolean;
 }
 
 const FALLBACK_PROJECTS: Project[] = [
@@ -47,7 +48,11 @@ const isExcluded = (name: string) => {
 
 const CLEAN_FALLBACKS = FALLBACK_PROJECTS.filter((p) => !isExcluded(p.name));
 
-export default function VercelProjects({ limit, showSeeMore = false }: VercelProjectsProps) {
+export default function VercelProjects({
+  limit,
+  showSeeMore = false,
+  isCarousel = false
+}: VercelProjectsProps) {
   const { language } = useLanguage();
   const { navigate } = useRouter();
   const [projects, setProjects] = useState<Project[]>(CLEAN_FALLBACKS);
@@ -55,9 +60,17 @@ export default function VercelProjects({ limit, showSeeMore = false }: VercelPro
   const [loading, setLoading] = useState(true);
   const [activePreview, setActivePreview] = useState<string | null>(null);
 
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const scroll = (direction: "left" | "right") => {
+    if (scrollRef.current) {
+      const amount = direction === "left" ? -340 : 340;
+      scrollRef.current.scrollBy({ left: amount, behavior: "smooth" });
+    }
+  };
+
   useEffect(() => {
     async function fetchProjects() {
-      // Vercel token injected via env variables
       const token = import.meta.env.VITE_VERCEL_TOKEN;
 
       if (!token) {
@@ -81,7 +94,6 @@ export default function VercelProjects({ limit, showSeeMore = false }: VercelPro
         const data = await res.json();
         const apiProjects: any[] = data.projects || [];
 
-        // Filter: Exclude angelo-miguel-dev, angelomigueldev and netflix
         const filtered = apiProjects
           .filter((p: any) => !isExcluded(p.name))
           .map((p: any) => {
@@ -145,13 +157,34 @@ export default function VercelProjects({ limit, showSeeMore = false }: VercelPro
               </h2>
             </div>
 
-            <div className="flex items-center gap-2 rounded-full border border-border-subtle bg-bg-secondary/60 px-4 py-1.5 font-mono text-[10px] text-text-secondary backdrop-blur-sm">
-              <span className={`h-2 w-2 rounded-full ${isLive ? "bg-emerald-500 animate-pulse" : "bg-accent-amber"}`} />
-              <span className="uppercase tracking-wider">
-                {isLive 
-                  ? (language === "en" ? "LIVE COMPILING" : "CONEXÃO AO VIVO") 
-                  : (language === "en" ? "OFFLINE CACHE" : "LOCAL CACHE ACTIVATED")}
-              </span>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 rounded-full border border-border-subtle bg-bg-secondary/60 px-4 py-1.5 font-mono text-[10px] text-text-secondary backdrop-blur-sm">
+                <span className={`h-2 w-2 rounded-full ${isLive ? "bg-emerald-500 animate-pulse" : "bg-accent-amber"}`} />
+                <span className="uppercase tracking-wider">
+                  {isLive 
+                    ? (language === "en" ? "LIVE COMPILING" : "CONEXÃO AO VIVO") 
+                    : (language === "en" ? "OFFLINE CACHE" : "LOCAL CACHE ACTIVATED")}
+                </span>
+              </div>
+
+              {isCarousel && (
+                <div className="flex items-center gap-1.5 ml-2">
+                  <button
+                    onClick={() => scroll("left")}
+                    aria-label="Previous Project"
+                    className="flex h-9 w-9 items-center justify-center rounded-full border border-border-subtle bg-bg-secondary/80 font-mono text-sm text-text-secondary hover:border-accent-teal hover:text-accent-teal transition-colors active:scale-95"
+                  >
+                    ←
+                  </button>
+                  <button
+                    onClick={() => scroll("right")}
+                    aria-label="Next Project"
+                    className="flex h-9 w-9 items-center justify-center rounded-full border border-border-subtle bg-bg-secondary/80 font-mono text-sm text-text-secondary hover:border-accent-teal hover:text-accent-teal transition-colors active:scale-95"
+                  >
+                    →
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </Reveal>
@@ -162,77 +195,159 @@ export default function VercelProjects({ limit, showSeeMore = false }: VercelPro
           </div>
         ) : (
           <>
-            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {displayedProjects.map((project, idx) => {
-                const isPreviewing = activePreview === project.name;
-                return (
-                  <Reveal key={project.name} delay={idx * 40}>
-                    <div className="tech-card flex h-full flex-col rounded-[8px] p-5">
-                      {/* Header */}
-                      <div className="flex items-center justify-between border-b border-border-subtle pb-3">
-                        <span className="font-mono text-[9px] text-text-hints uppercase tracking-widest">
-                          SYS // {project.name.slice(0, 12)}
-                        </span>
-                        <span className="h-1.5 w-1.5 rounded-full bg-accent-teal" />
-                      </div>
-
-                      {/* Content */}
-                      <div className="mt-4">
-                        <h3 className="text-base font-semibold text-text-primary tracking-tight">
-                          {formatName(project.name)}
-                        </h3>
-                        <p className="mt-1 text-xs font-mono text-text-hints truncate">
-                          {project.url.replace("https://", "")}
-                        </p>
-                      </div>
-
-                      {/* Embed Frame (Optimized Iframe) */}
-                      {isPreviewing && (
-                        <div className="mt-4 overflow-hidden rounded-[4px] border border-border-strong bg-black">
-                          {/* Custom Mock Browser Chrome */}
-                          <div className="flex items-center gap-1.5 bg-bg-secondary px-3 py-1.5 border-b border-border-subtle">
-                            <span className="h-1.5 w-1.5 rounded-full bg-red-500/80" />
-                            <span className="h-1.5 w-1.5 rounded-full bg-yellow-500/80" />
-                            <span className="h-1.5 w-1.5 rounded-full bg-green-500/80" />
-                            <span className="ml-2 font-mono text-[8px] text-text-hints truncate max-w-[120px]">
-                              {project.url.replace("https://", "")}
+            {isCarousel ? (
+              /* Carousel Layout */
+              <div
+                ref={scrollRef}
+                className="mt-12 flex gap-6 overflow-x-auto snap-x snap-mandatory no-scrollbar py-2 px-1 scroll-smooth"
+              >
+                {displayedProjects.map((project, idx) => {
+                  const isPreviewing = activePreview === project.name;
+                  return (
+                    <div
+                      key={project.name}
+                      className="snap-start shrink-0 w-[290px] sm:w-[320px] lg:w-[340px]"
+                    >
+                      <Reveal delay={idx * 40}>
+                        <div className="tech-card flex h-[380px] flex-col rounded-[8px] p-5">
+                          {/* Header */}
+                          <div className="flex items-center justify-between border-b border-border-subtle pb-3">
+                            <span className="font-mono text-[9px] text-text-hints uppercase tracking-widest">
+                              SYS // {project.name.slice(0, 12)}
                             </span>
+                            <span className="h-1.5 w-1.5 rounded-full bg-accent-teal" />
                           </div>
-                          <iframe
-                            src={project.url}
-                            title={project.name}
-                            loading="lazy"
-                            sandbox="allow-scripts allow-same-origin Allow-popups"
-                            className="h-[220px] w-full border-0 bg-white"
-                          />
+
+                          {/* Content */}
+                          <div className="mt-4">
+                            <h3 className="text-base font-semibold text-text-primary tracking-tight">
+                              {formatName(project.name)}
+                            </h3>
+                            <p className="mt-1 text-xs font-mono text-text-hints truncate">
+                              {project.url.replace("https://", "")}
+                            </p>
+                          </div>
+
+                          {/* Embed Frame (Optimized Iframe) */}
+                          {isPreviewing && (
+                            <div className="mt-4 overflow-hidden rounded-[4px] border border-border-strong bg-black">
+                              <div className="flex items-center gap-1.5 bg-bg-secondary px-3 py-1.5 border-b border-border-subtle">
+                                <span className="h-1.5 w-1.5 rounded-full bg-red-500/80" />
+                                <span className="h-1.5 w-1.5 rounded-full bg-yellow-500/80" />
+                                <span className="h-1.5 w-1.5 rounded-full bg-green-500/80" />
+                                <span className="ml-2 font-mono text-[8px] text-text-hints truncate max-w-[120px]">
+                                  {project.url.replace("https://", "")}
+                                </span>
+                              </div>
+                              <iframe
+                                src={project.url}
+                                title={project.name}
+                                loading="lazy"
+                                sandbox="allow-scripts allow-same-origin Allow-popups"
+                                className="h-[180px] w-full border-0 bg-white"
+                              />
+                            </div>
+                          )}
+
+                          {/* Actions */}
+                          <div className="mt-auto flex items-center justify-between pt-5 gap-2 border-t border-border-subtle/40">
+                            <button
+                              onClick={() => setActivePreview(isPreviewing ? null : project.name)}
+                              className="inline-flex items-center gap-1.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-text-secondary hover:text-accent-teal transition-colors"
+                            >
+                              {isPreviewing 
+                                ? (language === "en" ? "CLOSE" : "FECHAR") 
+                                : (language === "en" ? "EMBED preview" : "VER PREVIEW")}
+                            </button>
+
+                            <a
+                              href={project.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 font-mono text-[10px] font-bold uppercase tracking-wider text-accent-teal hover:text-accent-teal/80"
+                            >
+                              {language === "en" ? "VISIT" : "VISITAR"} ↗
+                            </a>
+                          </div>
                         </div>
-                      )}
-
-                      {/* Actions */}
-                      <div className="mt-auto flex items-center justify-between pt-5 gap-2 border-t border-border-subtle/40 mt-4">
-                        <button
-                          onClick={() => setActivePreview(isPreviewing ? null : project.name)}
-                          className="inline-flex items-center gap-1.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-text-secondary hover:text-accent-teal transition-colors"
-                        >
-                          {isPreviewing 
-                            ? (language === "en" ? "CLOSE" : "FECHAR") 
-                            : (language === "en" ? "EMBED preview" : "VER PREVIEW")}
-                        </button>
-
-                        <a
-                          href={project.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 font-mono text-[10px] font-bold uppercase tracking-wider text-accent-teal hover:text-accent-teal/80"
-                        >
-                          {language === "en" ? "VISIT" : "VISITAR"} ↗
-                        </a>
-                      </div>
+                      </Reveal>
                     </div>
-                  </Reveal>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            ) : (
+              /* Grid Layout */
+              <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {displayedProjects.map((project, idx) => {
+                  const isPreviewing = activePreview === project.name;
+                  return (
+                    <Reveal key={project.name} delay={idx * 40}>
+                      <div className="tech-card flex h-full flex-col rounded-[8px] p-5">
+                        {/* Header */}
+                        <div className="flex items-center justify-between border-b border-border-subtle pb-3">
+                          <span className="font-mono text-[9px] text-text-hints uppercase tracking-widest">
+                            SYS // {project.name.slice(0, 12)}
+                          </span>
+                          <span className="h-1.5 w-1.5 rounded-full bg-accent-teal" />
+                        </div>
+
+                        {/* Content */}
+                        <div className="mt-4">
+                          <h3 className="text-base font-semibold text-text-primary tracking-tight">
+                            {formatName(project.name)}
+                          </h3>
+                          <p className="mt-1 text-xs font-mono text-text-hints truncate">
+                            {project.url.replace("https://", "")}
+                          </p>
+                        </div>
+
+                        {/* Embed Frame (Optimized Iframe) */}
+                        {isPreviewing && (
+                          <div className="mt-4 overflow-hidden rounded-[4px] border border-border-strong bg-black">
+                            <div className="flex items-center gap-1.5 bg-bg-secondary px-3 py-1.5 border-b border-border-subtle">
+                              <span className="h-1.5 w-1.5 rounded-full bg-red-500/80" />
+                              <span className="h-1.5 w-1.5 rounded-full bg-yellow-500/80" />
+                              <span className="h-1.5 w-1.5 rounded-full bg-green-500/80" />
+                              <span className="ml-2 font-mono text-[8px] text-text-hints truncate max-w-[120px]">
+                                {project.url.replace("https://", "")}
+                              </span>
+                            </div>
+                            <iframe
+                              src={project.url}
+                              title={project.name}
+                              loading="lazy"
+                              sandbox="allow-scripts allow-same-origin Allow-popups"
+                              className="h-[220px] w-full border-0 bg-white"
+                            />
+                          </div>
+                        )}
+
+                        {/* Actions */}
+                        <div className="mt-auto flex items-center justify-between pt-5 gap-2 border-t border-border-subtle/40 mt-4">
+                          <button
+                            onClick={() => setActivePreview(isPreviewing ? null : project.name)}
+                            className="inline-flex items-center gap-1.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-text-secondary hover:text-accent-teal transition-colors"
+                          >
+                            {isPreviewing 
+                              ? (language === "en" ? "CLOSE" : "FECHAR") 
+                              : (language === "en" ? "EMBED preview" : "VER PREVIEW")}
+                          </button>
+
+                          <a
+                            href={project.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 font-mono text-[10px] font-bold uppercase tracking-wider text-accent-teal hover:text-accent-teal/80"
+                          >
+                            {language === "en" ? "VISIT" : "VISITAR"} ↗
+                          </a>
+                        </div>
+                      </div>
+                    </Reveal>
+                  );
+                })}
+              </div>
+            )}
 
             {showSeeMore && (
               <Reveal>
