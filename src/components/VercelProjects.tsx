@@ -15,13 +15,13 @@ interface VercelProjectsProps {
   isCarousel?: boolean;
 }
 
-const CACHE_KEY = "VERCEL_PROJECTS_CACHE_48H_V3";
+const CACHE_KEY = "VERCEL_PROJECTS_CACHE_48H_V4";
 const CACHE_DURATION_MS = 48 * 60 * 60 * 1000; // 48 hours
 
 const FALLBACK_PROJECTS: Project[] = [
   { name: "psico_patricia", url: "https://psicopatricia.vercel.app" },
   { name: "convec-solar", url: "https://convec-solar.vercel.app" },
-  { name: "elevare", url: "https://elevare.vercel.app" },
+  { name: "elevare", url: "https://elevare-inky.vercel.app" },
   { name: "multisoft-saude", url: "https://multisoft-saude.vercel.app" },
   { name: "ron-tatoo", url: "https://ron-tatoo.vercel.app" },
   { name: "estet-dra-aline-sarmento", url: "https://estet-dra-aline-sarmento.vercel.app" },
