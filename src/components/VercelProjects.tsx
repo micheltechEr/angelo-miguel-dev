@@ -183,6 +183,18 @@ export default function VercelProjects({
     fetchProjects();
   }, []);
 
+  // Preload desktop & mobile images into browser RAM cache for instant switching
+  useEffect(() => {
+    if (projects.length > 0) {
+      projects.forEach((p) => {
+        const imgDesk = new Image();
+        imgDesk.src = `/screenshots/${p.name}-desktop.jpg`;
+        const imgMob = new Image();
+        imgMob.src = `/screenshots/${p.name}-mobile.jpg`;
+      });
+    }
+  }, [projects]);
+
   const formatName = (str: string) => {
     return str
       .replace(/[_-]/g, " ")
