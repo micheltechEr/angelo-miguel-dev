@@ -15,7 +15,7 @@ interface VercelProjectsProps {
   isCarousel?: boolean;
 }
 
-const CACHE_KEY = "VERCEL_PROJECTS_CACHE_48H_V2";
+const CACHE_KEY = "VERCEL_PROJECTS_CACHE_48H_V3";
 const CACHE_DURATION_MS = 48 * 60 * 60 * 1000; // 48 hours
 
 const FALLBACK_PROJECTS: Project[] = [
@@ -57,7 +57,6 @@ const resolveProjectDomain = (p: any): string => {
   const allAlias: string[] = p.alias || [];
   const candidates = [...prodAlias, ...allAlias];
 
-  // Look for clean alias without git preview strings
   const cleanCandidate = candidates.find((d: string) => {
     const lower = d.toLowerCase();
     return (
@@ -97,30 +96,31 @@ export default function VercelProjects({
   };
 
   useEffect(() => {
-    async function fetchProjects() {
-      // Clear legacy cache keys
-      try {
-        localStorage.removeItem("VERCEL_PROJECTS_CACHE_48H");
-      } catch (e) {}
+    // Clear old cache keys
+    try {
+      localStorage.removeItem("VERCEL_PROJECTS_CACHE_48H");
+      localStorage.removeItem("VERCEL_PROJECTS_CACHE_48H_V2");
+    } catch (e) {}
 
-      // 1. Check 48h localStorage cache
-      try {
-        const cachedRaw = localStorage.getItem(CACHE_KEY);
-        if (cachedRaw) {
-          const cachedData = JSON.parse(cachedRaw);
-          const age = Date.now() - (cachedData.timestamp || 0);
-          if (age < CACHE_DURATION_MS && cachedData.projects?.length > 0) {
-            setProjects(cachedData.projects);
-            setIsLive(cachedData.isLive ?? true);
-            setLoading(false);
-            return;
-          }
+    // 1. Check 48h localStorage cache
+    try {
+      const cachedRaw = localStorage.getItem(CACHE_KEY);
+      if (cachedRaw) {
+        const cachedData = JSON.parse(cachedRaw);
+        const age = Date.now() - (cachedData.timestamp || 0);
+        if (age < CACHE_DURATION_MS && cachedData.projects?.length > 0) {
+          setProjects(cachedData.projects);
+          setIsLive(cachedData.isLive ?? true);
+          setLoading(false);
+          return;
         }
-      } catch (err) {
-        console.warn("Cache parse error, re-fetching:", err);
       }
+    } catch (err) {
+      console.warn("Cache parse error, re-fetching:", err);
+    }
 
-      // 2. Fetch from Vercel API if cache missing/expired
+    // 2. Fetch from Vercel API if cache missing/expired
+    async function fetchProjects() {
       const token = import.meta.env.VITE_VERCEL_TOKEN;
 
       if (!token) {
@@ -159,7 +159,6 @@ export default function VercelProjects({
         setProjects(finalProjects);
         setIsLive(liveStatus);
 
-        // Save to 48h localStorage cache
         try {
           localStorage.setItem(
             CACHE_KEY,
@@ -190,7 +189,11 @@ export default function VercelProjects({
       .replace(/\b\w/g, (c) => c.toUpperCase());
   };
 
-  const getScreenshotUrl = (url: string, mode: "desktop" | "mobile") => {
+  const getPrimaryScreenshot = (projectName: string, mode: "desktop" | "mobile") => {
+    return `/screenshots/${projectName}-${mode}.jpg`;
+  };
+
+  const getFallbackScreenshot = (url: string, mode: "desktop" | "mobile") => {
     const encoded = encodeURIComponent(url);
     if (mode === "mobile") {
       return `https://api.microlink.io/?url=${encoded}&screenshot=true&viewport.isMobile=true&embed=screenshot.url`;
@@ -201,7 +204,8 @@ export default function VercelProjects({
   const displayedProjects = limit ? projects.slice(0, limit) : projects;
 
   const renderCardPreview = (project: Project) => {
-    const screenshotUrl = getScreenshotUrl(project.url, deviceMode);
+    const localSrc = getPrimaryScreenshot(project.name, deviceMode);
+    const fallbackSrc = getFallbackScreenshot(project.url, deviceMode);
 
     if (deviceMode === "mobile") {
       return (
@@ -209,12 +213,16 @@ export default function VercelProjects({
           <div className="relative w-[115px] aspect-[9/18] overflow-hidden rounded-[14px] border-[2px] border-border-strong bg-black shadow-xl group">
             <div className="absolute top-1 left-1/2 -translate-x-1/2 z-10 h-1 w-6 rounded-full bg-border-strong" />
             <img
-              src={screenshotUrl}
+              src={localSrc}
               alt={`${project.name} mobile preview`}
               loading="lazy"
-              className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+              decoding="async"
+              className="h-full w-full object-cover object-top transition-transform duration-300 group-hover:scale-105"
               onError={(e) => {
-                e.currentTarget.src = `https://image.thum.io/get/width/600/crop/800/${project.url}`;
+                const target = e.currentTarget;
+                if (target.src !== fallbackSrc) {
+                  target.src = fallbackSrc;
+                }
               }}
             />
           </div>
@@ -237,12 +245,16 @@ export default function VercelProjects({
 
         <div className="relative aspect-[16/10] w-full overflow-hidden bg-bg-elevated group">
           <img
-            src={screenshotUrl}
+            src={localSrc}
             alt={`${project.name} desktop preview`}
             loading="lazy"
-            className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+            decoding="async"
+            className="h-full w-full object-cover object-top transition-transform duration-300 group-hover:scale-105"
             onError={(e) => {
-              e.currentTarget.src = `https://image.thum.io/get/width/600/crop/800/${project.url}`;
+              const target = e.currentTarget;
+              if (target.src !== fallbackSrc) {
+                target.src = fallbackSrc;
+              }
             }}
           />
         </div>
@@ -297,7 +309,7 @@ export default function VercelProjects({
                 <span className="uppercase tracking-wider">
                   {isLive 
                     ? (language === "en" ? "LIVE CACHED" : "CONEXÃO ATIVA (48h)") 
-                    : (language === "en" ? "LOCAL CACHE" : "LOCAL CACHE ACTIVATED")}
+                    : (language === "en" ? "FAST STATIC CACHE" : "STATIC CACHE ACTIVATED")}
                 </span>
               </div>
 
