@@ -2,6 +2,7 @@ import { useLanguage } from "../i18n/LanguageContext";
 import { useRouter } from "../hooks/useRouter";
 import VercelProjects from "../components/VercelProjects";
 import Reveal from "../components/Reveal";
+import { trackClickEvent } from "../utils/analytics";
 
 export default function ProjetosPage() {
   const { language } = useLanguage();
@@ -47,6 +48,7 @@ export default function ProjetosPage() {
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => trackClickEvent("click_whatsapp", { location: "projetos_page_header" })}
                   className="inline-flex items-center gap-2 rounded-[8px] bg-accent-teal px-5 py-3 font-mono text-xs font-bold uppercase tracking-wider text-bg-primary hover:bg-accent-teal/90 active:scale-[0.98] transition-all shadow-lg"
                 >
                   <span>{language === "en" ? "START PROJECT" : "INICIAR PROJETO"}</span>

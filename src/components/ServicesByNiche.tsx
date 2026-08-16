@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useLanguage } from "../i18n/LanguageContext";
+import { trackClickEvent } from "../utils/analytics";
 
 function AccordionItem({
   name,
@@ -153,6 +154,7 @@ export default function ServicesByNiche() {
               href={`https://wa.me/${t.servicesByNiche.cta.whatsapp}?text=${encodeURIComponent(t.servicesByNiche.cta.whatsappText)}`}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackClickEvent("click_whatsapp", { location: "services_by_niche" })}
               className="mt-5 inline-flex items-center gap-2 rounded-[8px] bg-accent-teal px-6 py-3 text-sm font-semibold text-bg-primary transition-all duration-200 hover:bg-accent-teal/90 hover:scale-[1.02]"
             >
               {t.servicesByNiche.cta.button}

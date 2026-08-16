@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { useLanguage } from "../i18n/LanguageContext";
 import { useRouter } from "../hooks/useRouter";
 import Reveal from "./Reveal";
+import { trackClickEvent } from "../utils/analytics";
 
 interface Project {
   name: string;
@@ -249,6 +250,7 @@ export default function VercelProjects({
               href={`https://wa.me/5575988428289?text=${whatsappText}`}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackClickEvent("click_whatsapp", { location: "projects_cta_card", title: title })}
               className="w-full inline-flex items-center justify-center gap-2 py-2.5 rounded-[6px] bg-accent-teal text-bg-primary font-mono text-[10px] font-bold uppercase tracking-wider hover:bg-accent-teal/90 active:scale-[0.98] transition-all shadow-sm"
             >
               <span>{language === "en" ? "REQUEST QUOTE" : "SOLICITAR ORÇAMENTO"}</span>
@@ -434,6 +436,7 @@ export default function VercelProjects({
                             href={project.url}
                             target="_blank"
                             rel="noopener noreferrer"
+                            onClick={() => trackClickEvent("click_project_link", { project_name: project.name, url: project.url, layout: "carousel" })}
                             className="inline-flex items-center gap-1 font-mono text-[10px] font-bold uppercase tracking-wider text-accent-teal hover:text-accent-teal/80"
                           >
                             {language === "en" ? "VISIT SITE" : "VISITAR SITE"} ↗
@@ -484,6 +487,7 @@ export default function VercelProjects({
                               href={project.url}
                               target="_blank"
                               rel="noopener noreferrer"
+                              onClick={() => trackClickEvent("click_project_link", { project_name: project.name, url: project.url, layout: "grid" })}
                               className="inline-flex items-center gap-1 font-mono text-[10px] font-bold uppercase tracking-wider text-accent-teal hover:text-accent-teal/80"
                             >
                               {language === "en" ? "VISIT SITE" : "VISITAR SITE"} ↗

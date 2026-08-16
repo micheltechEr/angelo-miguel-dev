@@ -1,5 +1,6 @@
 import { useLanguage } from "../i18n/LanguageContext";
 import Reveal from "./Reveal";
+import { trackClickEvent } from "../utils/analytics";
 
 export default function Hero() {
   const { t } = useLanguage();
@@ -102,6 +103,7 @@ export default function Hero() {
               href="/ANGELO_MIGUEL_RIBEIRO_CERQUEIRA_LIMA.pdf"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackClickEvent("click_cv", { location: "hero" })}
               className="inline-flex items-center gap-1.5 rounded-[6px] border border-border-strong px-5 py-3 text-sm font-medium text-text-primary transition-all duration-200 hover:border-accent-teal hover:text-accent-teal active:scale-[0.97]"
             >
               {t.hero.ctaCvView}

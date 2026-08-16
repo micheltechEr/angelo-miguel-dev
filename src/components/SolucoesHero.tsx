@@ -1,4 +1,5 @@
 import { useLanguage } from "../i18n/LanguageContext";
+import { trackClickEvent } from "../utils/analytics";
 
 export default function SolucoesHero() {
   const { t } = useLanguage();
@@ -31,6 +32,7 @@ export default function SolucoesHero() {
             href={`https://wa.me/${t.servicesByNiche.cta.whatsapp}?text=${encodeURIComponent(t.servicesByNiche.cta.whatsappText)}`}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackClickEvent("click_whatsapp", { location: "solucoes_hero" })}
             className="inline-flex items-center gap-2 rounded-[8px] bg-accent-teal px-6 py-3 text-sm font-semibold text-bg-primary transition-all duration-200 hover:bg-accent-teal/90 active:scale-[0.96]"
           >
             {s.ctaWhatsapp}
