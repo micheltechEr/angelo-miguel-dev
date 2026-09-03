@@ -16,30 +16,10 @@ interface VercelProjectsProps {
   isCarousel?: boolean;
 }
 
-const CACHE_KEY = "VERCEL_PROJECTS_CACHE_48H_V4";
+const CACHE_KEY = "VERCEL_PROJECTS_CACHE_48H_V5";
 const CACHE_DURATION_MS = 48 * 60 * 60 * 1000; // 48 hours
 
-const FALLBACK_PROJECTS: Project[] = [
-  { name: "psico_patricia", url: "https://psicopatricia.vercel.app" },
-  { name: "convec-solar", url: "https://convec-solar.vercel.app" },
-  { name: "elevare", url: "https://elevare-inky.vercel.app" },
-  { name: "multisoft-saude", url: "https://multisoft-saude.vercel.app" },
-  { name: "ron-tatoo", url: "https://ron-tatoo.vercel.app" },
-  { name: "estet-dra-aline-sarmento", url: "https://estet-dra-aline-sarmento.vercel.app" },
-  { name: "nexus-wize", url: "https://nexus-wize.vercel.app" },
-  { name: "psi-marcon", url: "https://psi-marcon.vercel.app" },
-  { name: "psi-ana-lage", url: "https://psi-ana-lage.vercel.app" },
-  { name: "neuro-psi-lucyenne", url: "https://neuro-psi-lucyenne.vercel.app" },
-  { name: "psi-leticia-freitas", url: "https://psi-leticia-freitas.vercel.app" },
-  { name: "wubbert-aguiar", url: "https://wubbert-aguiar.vercel.app" },
-  { name: "araujo-e-costa-advocacia", url: "https://araujo-e-costa-advocacia.vercel.app" },
-  { name: "drraphaelbonadiman", url: "https://drraphaelbonadiman.vercel.app" },
-  { name: "araujo-e-silva", url: "https://araujo-e-silva.vercel.app" },
-  { name: "dr-davy-cardoso", url: "https://dr-davy-cardoso.vercel.app" },
-  { name: "francelino-imoveis", url: "https://francelino-imoveis.vercel.app" },
-  { name: "psi-gildo", url: "https://psi-gildo.vercel.app" },
-  { name: "tatoo_portifolio", url: "https://tatooportifolio.vercel.app" }
-];
+const FALLBACK_PROJECTS: Project[] = [];
 
 const isExcluded = (name: string) => {
   const n = name.toLowerCase();
@@ -100,6 +80,8 @@ export default function VercelProjects({
     try {
       localStorage.removeItem("VERCEL_PROJECTS_CACHE_48H");
       localStorage.removeItem("VERCEL_PROJECTS_CACHE_48H_V2");
+      localStorage.removeItem("VERCEL_PROJECTS_CACHE_48H_V3");
+      localStorage.removeItem("VERCEL_PROJECTS_CACHE_48H_V4");
     } catch (e) {}
 
     // 1. Check 48h localStorage cache
