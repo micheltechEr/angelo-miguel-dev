@@ -1,8 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 import { useLanguage } from "../i18n/LanguageContext";
 
-// Prevents loading overlay re-triggering during SPA state/language updates
+const SESSION_STORAGE_KEY = "ANGELO_PORTFOLIO_PRELOADER_V2";
 let preloaderFinishedGlobal = false;
+
+function isPreloaderAlreadySeen(): boolean {
+  if (typeof window === "undefined") return false;
+  if (preloaderFinishedGlobal) return true;
+  try {
+    return sessionStorage.getItem(SESSION_STORAGE_KEY) === "true";
+  } catch {
+    return false;
+  }
+}
 
 function prefersReducedMotion(): boolean {
   return (
@@ -12,10 +22,10 @@ function prefersReducedMotion(): boolean {
 }
 
 export default function Preloader() {
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
   const [progress, setProgress] = useState(0);
   const [phase, setPhase] = useState<"loading" | "exit" | "done">(() => {
-    return preloaderFinishedGlobal ? "done" : "loading";
+    return isPreloaderAlreadySeen() ? "done" : "loading";
   });
   const [bootLine, setBootLine] = useState(0);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -25,45 +35,62 @@ export default function Preloader() {
   useEffect(() => {
     if (phase === "done") return;
 
-    const reduced = prefersReducedMotion();
-
-    if (reduced) {
+    if (isPreloaderAlreadySeen() || prefersReducedMotion()) {
       setProgress(100);
       setBootLine(bootLines.length - 1);
-      const id = window.setTimeout(() => setPhase("exit"), 250);
-      return () => window.clearTimeout(id);
+      setPhase("done");
+      preloaderFinishedGlobal = true;
+      try {
+        sessionStorage.setItem(SESSION_STORAGE_KEY, "true");
+      } catch {}
+      return;
     }
 
+    // Snappy fixed-duration timer (~750ms total animation)
+    const DURATION = 750;
+    const startTime = performance.now();
     let raf = 0;
-    let current = 0;
-    let last = performance.now();
+
     const tick = (now: number) => {
-      const elapsed = now - last;
-      last = now;
-      // Slower boot animation step: 0.018 -> 0.009
-      const step = Math.max(0.3, (100 - current) * 0.009);
-      const jitter = Math.random() * 0.9;
-      current = Math.min(100, current + step + jitter * (elapsed / 16));
-      setProgress(Math.floor(current));
-      setBootLine(Math.min(bootLines.length - 1, Math.floor((current / 100) * bootLines.length)));
-      if (current >= 100) {
+      const elapsed = now - startTime;
+      const rawProgress = Math.min(1, elapsed / DURATION);
+      
+      // Smooth ease-out quad
+      const eased = 1 - Math.pow(1 - rawProgress, 2);
+      const currentProgress = Math.min(100, Math.floor(eased * 100));
+
+      setProgress(currentProgress);
+      setBootLine(
+        Math.min(
+          bootLines.length - 1,
+          Math.floor((currentProgress / 100) * bootLines.length)
+        )
+      );
+
+      if (rawProgress >= 1) {
         setProgress(100);
         setBootLine(bootLines.length - 1);
-        window.setTimeout(() => setPhase("exit"), 600);
+        preloaderFinishedGlobal = true;
+        try {
+          sessionStorage.setItem(SESSION_STORAGE_KEY, "true");
+        } catch {}
+        
+        window.setTimeout(() => setPhase("exit"), 150);
         return;
       }
+
       raf = window.requestAnimationFrame(tick);
     };
+
     raf = window.requestAnimationFrame(tick);
     return () => window.cancelAnimationFrame(raf);
-  }, [bootLines, language, phase]);
+  }, [bootLines.length, phase]);
 
   useEffect(() => {
     if (phase === "exit") {
       const id = window.setTimeout(() => {
         setPhase("done");
-        preloaderFinishedGlobal = true;
-      }, 1000);
+      }, 400);
       return () => window.clearTimeout(id);
     }
   }, [phase]);
@@ -145,26 +172,15 @@ export default function Preloader() {
             <div
               key={i}
               className={[
-                "transition-opacity duration-300 sm:text-xs",
-                i <= bootLine ? "opacity-100" : "opacity-0",
+                "transition-opacity duration-150",
+                i <= bootLine ? "opacity-100" : "opacity-20",
               ].join(" ")}
             >
-              <span className="text-accent-teal">&gt;</span> {line}
+              <span className="text-text-hints mr-2">$</span>
+              {line}
             </div>
           ))}
         </div>
-
-        {/* progress bar — brand gradient */}
-        <div className="mt-7 h-[2px] w-44 overflow-hidden rounded-full bg-border-subtle">
-          <div
-            className="h-full rounded-full preloader-bar"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-
-        <p className="mt-5 font-mono text-[10px] uppercase tracking-[0.18em] text-text-hints">
-          {t.preloader.tagline}
-        </p>
       </div>
     </div>
   );
