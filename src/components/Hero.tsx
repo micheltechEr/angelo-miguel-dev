@@ -3,7 +3,7 @@ import Reveal from "./Reveal";
 import { trackClickEvent } from "../utils/analytics";
 
 export default function Hero() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   return (
     <section className="relative flex min-h-svh flex-col items-center justify-center overflow-hidden px-6 pt-28 pb-20">
@@ -35,53 +35,78 @@ export default function Hero() {
             role="img"
             className="relative z-10 text-accent-teal hover:scale-105 transition-transform duration-300"
           >
-            <circle cx="44" cy="44" r="42" stroke="currentColor" strokeWidth="1" strokeDasharray="3 3" opacity="0.6" />
-            <circle cx="44" cy="44" r="38" stroke="currentColor" strokeWidth="1.5" opacity="0.15" />
+            <circle cx="44" cy="44" r="42" stroke="currentColor" strokeWidth="1.5" strokeOpacity="0.4" />
+            <circle cx="44" cy="44" r="38" stroke="currentColor" strokeWidth="0.5" strokeOpacity="0.15" />
             <path
-              d="M28 60V28L44 50L60 28V60"
+              d="M34 58 L44 26 L54 58"
               stroke="currentColor"
-              strokeWidth="3"
+              strokeWidth="2.5"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
-            <path d="M22 70H66" stroke="currentColor" strokeWidth="2" strokeLinecap="round" opacity="0.5" />
+            <path
+              d="M37.5 48 H50.5"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+            <path
+              d="M26 62 L32 26 L44 46 L56 26 L62 62"
+              stroke="currentColor"
+              strokeWidth="1"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeOpacity="0.3"
+            />
           </svg>
         </div>
 
-        <Reveal as="div">
-          <p className="label-uppercase text-accent-teal">{t.hero.tagline}</p>
+        {/* Live Status Badge */}
+        <Reveal as="div" delay={80}>
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border-strong bg-bg-card/90 px-3.5 py-1.5 font-mono text-xs text-text-secondary shadow-sm">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-teal opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-accent-teal"></span>
+            </span>
+            <span>
+              {language === "en" ? "AVAILABLE FOR HIGH-IMPACT PROJECTS" : "DISPONÍVEL PARA PROJETOS DE ALTO IMPACTO"}
+            </span>
+            <span className="text-border-strong">|</span>
+            <span className="text-text-hints">BA / BR</span>
+          </div>
         </Reveal>
 
-        <Reveal as="div" delay={80}>
-          <h1 className="heading-xl mt-5 text-text-primary">
+        {/* Title & Tagline */}
+        <Reveal delay={120}>
+          <h1 className="heading-hero text-text-primary">
             {t.hero.name}
           </h1>
+          <p className="mt-2 font-mono text-sm font-semibold tracking-wider text-accent-teal uppercase">
+            {t.hero.tagline}
+          </p>
         </Reveal>
 
-        <Reveal as="div" delay={160}>
-          <p className="mx-auto mt-7 max-w-xl text-base leading-relaxed text-text-secondary md:text-lg">
+        {/* Subtitle / Description */}
+        <Reveal delay={180}>
+          <p className="body-large mx-auto mt-6 max-w-xl text-text-secondary">
             {t.hero.description}
           </p>
         </Reveal>
 
-        {/* Telemetry Status Bar */}
-        <Reveal as="div" delay={200}>
-          <div className="mx-auto mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 rounded-[6px] border border-border-subtle bg-bg-secondary/40 px-6 py-2.5 font-mono text-[10px] text-text-hints backdrop-blur-md max-w-xl">
-            <div className="flex items-center gap-1.5">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-text-secondary">SYSTEM:</span> READY
+        {/* Architecture & Performance HUD */}
+        <Reveal as="div" delay={240}>
+          <div className="mx-auto mt-7 flex flex-wrap items-center justify-center gap-3 font-mono text-xs text-text-hints">
+            <div className="flex items-center gap-1.5 rounded-[4px] border border-border-subtle bg-bg-card/60 px-2.5 py-1">
+              <span className="text-accent-teal font-semibold">0.00 CLS</span>
             </div>
-            <span className="hidden text-border-strong sm:inline">|</span>
-            <div>
-              <span className="text-text-secondary">LOC:</span> BA // BR
+            <div className="flex items-center gap-1.5 rounded-[4px] border border-border-subtle bg-bg-card/60 px-2.5 py-1">
+              <span className="text-accent-teal font-semibold">99+ PAGESPEED</span>
             </div>
-            <span className="hidden text-border-strong sm:inline">|</span>
-            <div>
-              <span className="text-text-secondary">ENGINE:</span> DOCKER // NODE
+            <div className="flex items-center gap-1.5 rounded-[4px] border border-border-subtle bg-bg-card/60 px-2.5 py-1">
+              <span className="text-text-secondary">STACK:</span> REACT 19 // VITE // TAILWIND 4
             </div>
-            <span className="hidden text-border-strong sm:inline">|</span>
-            <div>
-              <span className="text-text-secondary">PING:</span> 12MS
+            <div className="flex items-center gap-1.5 rounded-[4px] border border-border-subtle bg-bg-card/60 px-2.5 py-1">
+              <span className="text-text-secondary">EDGE:</span> VERCEL
             </div>
           </div>
         </Reveal>
@@ -90,24 +115,41 @@ export default function Hero() {
           <div className="mx-auto my-9 h-px w-20 hairline" />
         </Reveal>
 
+        {/* CTAs: Primary + Pure Architectural Outline */}
         <Reveal as="div" delay={340}>
           <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
             <a
-              href="#projects"
-              className="inline-flex items-center gap-2 rounded-[6px] bg-accent-teal px-6 py-3 text-sm font-semibold text-bg-primary transition-all duration-200 hover:bg-accent-teal/90 hover:-translate-y-0.5 hover:shadow-[0_0_15px_rgba(31,224,182,0.3)] active:scale-[0.97]"
+              href="#vercel-showcase"
+              className="inline-flex items-center gap-2 rounded-[4px] bg-accent-teal px-6 py-3 font-mono text-xs font-bold text-bg-primary transition-all duration-200 hover:bg-accent-teal/90 hover:-translate-y-0.5 hover:shadow-[0_0_20px_rgba(0,242,254,0.35)] active:scale-[0.98]"
             >
-              {t.hero.ctaProjects}
+              <span>{t.hero.ctaProjects}</span>
               <span aria-hidden="true">&rarr;</span>
             </a>
+
             <a
-              href="/ANGELO_MIGUEL_RIBEIRO_CERQUEIRA_LIMA.pdf"
+              href={`https://wa.me/5575988428289?text=${encodeURIComponent(
+                language === "en"
+                  ? "Hi Angelo! I'd like to discuss a new software / landing page project."
+                  : "Olá Ângelo! Gostaria de falar sobre um projeto de desenvolvimento / landing page."
+              )}`}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => trackClickEvent("click_cv", { location: "hero" })}
-              className="inline-flex items-center gap-1.5 rounded-[6px] border border-border-strong px-5 py-3 text-sm font-medium text-text-primary transition-all duration-200 hover:border-accent-teal hover:text-accent-teal active:scale-[0.97]"
+              onClick={() => trackClickEvent("click_whatsapp", { location: "hero_primary" })}
+              className="inline-flex items-center gap-2 rounded-[4px] border-[1.5px] border-text-primary px-5 py-3 font-mono text-xs font-semibold text-text-primary transition-all duration-200 hover:bg-text-primary hover:text-bg-primary active:scale-[0.98]"
             >
-              {t.hero.ctaCvView}
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <span>{language === "en" ? "Direct WhatsApp" : "Chamar no WhatsApp"}</span>
+              <span aria-hidden="true">↗</span>
+            </a>
+
+            <a
+              href="https://www.linkedin.com/in/angelo-miguel-rib-cerq/"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackClickEvent("click_linkedin", { location: "hero" })}
+              className="inline-flex items-center gap-1.5 rounded-[4px] border-[1.5px] border-border-strong px-4 py-3 font-mono text-xs font-medium text-text-secondary transition-all duration-200 hover:border-text-primary hover:text-text-primary active:scale-[0.98]"
+            >
+              <span>LinkedIn</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M18 13 v6 a2 2 0 0 1 -2 2 H5 a2 2 0 0 1 -2 -2 V8 a2 2 0 0 1 2 -2 h6" />
                 <polyline points="15 3 21 3 21 9" />
                 <line x1="10" y1="14" x2="21" y2="3" />
@@ -115,14 +157,6 @@ export default function Hero() {
             </a>
           </div>
         </Reveal>
-      </div>
-
-      {/* scroll cue */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 animate-bounce text-text-hints" aria-hidden="true">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <line x1="12" y1="5" x2="12" y2="19" />
-          <polyline points="19 12 12 19 5 12" />
-        </svg>
       </div>
     </section>
   );
